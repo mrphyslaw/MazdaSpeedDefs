@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6 - 2026-10-18
+
+- Added the L39SEF000 first-draft definition and checksum module.
+- Updated the portable launcher and build command for all four definitions.
+- Passed native-code and RomRaider validation, followed by user manual review.
+
+Vehicle and flashing validation have not been performed.
+
 ## 0.5 - 2026-10-18
 
 - Added the L39SEE000 first-draft definition and checksum module.
