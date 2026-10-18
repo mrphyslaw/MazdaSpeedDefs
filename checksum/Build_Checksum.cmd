@@ -9,11 +9,13 @@ where jar >nul 2>nul
 if errorlevel 1 goto missing
 if not exist "build" mkdir "build"
 if errorlevel 1 goto failed
-javac --release 11 -g:none -encoding UTF-8 -cp "..\RomRaider.jar" -d "build" "source\ChecksumMAZDAL38K.java" "source\ChecksumMAZDAL3M7.java"
+javac --release 11 -g:none -encoding UTF-8 -cp "..\RomRaider.jar" -d "build" "source\ChecksumMAZDAL38K.java" "source\ChecksumMAZDAL3M7.java" "source\ChecksumMAZDAL39S.java"
 if errorlevel 1 goto failed
 jar -J-Djava.io.tmpdir="%CD%\build" --create --file "MazdaL38KChecksum.jar" --no-manifest -C "build" "com/romraider/maps/checksum/ChecksumMAZDAL38K.class" -C "." "LICENSE.txt"
 if errorlevel 1 goto failed
 jar -J-Djava.io.tmpdir="%CD%\build" --create --file "MazdaL3M7Checksum.jar" --no-manifest -C "build" "com/romraider/maps/checksum/ChecksumMAZDAL3M7.class" -C "." "LICENSE.txt"
+if errorlevel 1 goto failed
+jar -J-Djava.io.tmpdir="%CD%\build" --create --file "MazdaL39SChecksum.jar" --no-manifest -C "build" "com/romraider/maps/checksum/ChecksumMAZDAL39S.class" -C "." "LICENSE.txt"
 if errorlevel 1 goto failed
 echo Checksum modules built successfully.
 popd

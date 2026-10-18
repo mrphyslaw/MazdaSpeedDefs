@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5 - 2026-10-18
+
+- Added the L39SEE000 first-draft definition and checksum module.
+- Included the verified minimum-lambda RPM curve and base deceleration-RPM offset.
+- Renamed Injector Pulsewidth Floor to Injector Pulsewidth Minimum in all definitions.
+- Updated the portable launcher and build command for all three definitions.
+- Passed software validation; the initial L39 draft also passed manual RomRaider spot checks.
+
+Vehicle and flashing validation have not been performed.
+
 ## 0.4 - 2026-10-18
 
 - Added the L3M7EF000 first-draft definition and checksum module.
