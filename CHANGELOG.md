@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4 - 2026-10-18
+
+- Added the L3M7EF000 first-draft definition and checksum module.
+- Updated the portable launcher and build command to support both definitions.
+- Passed software validation and manual RomRaider map spot checks.
+
+Vehicle and flashing validation have not been performed.
+
 ## 0.3 - 2026-10-18
 
 Initial repository publication of the L38KEH000 first draft.

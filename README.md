@@ -14,13 +14,13 @@ Definition filenames identify the ECU software they support. ROM files are not i
 4. Add the definition through RomRaider's ECU Definition Manager.
 5. Open your ROM. Save your changes under a new filename.
 
-The launcher uses Java from the RomRaider folder, `JAVA_HOME`, or `PATH`. It prints a message if RomRaider, Java, or the checksum module is missing.
+The launcher uses Java from the RomRaider folder, `JAVA_HOME`, or `PATH`. It prints a message if RomRaider, Java, or a checksum module is missing.
 
 ## Checksum support
 
-Use the supplied launcher so RomRaider can load the included checksum module. The module checks supported ROMs when opened and updates their checksum when saved.
+Use the supplied launcher so RomRaider can load the included checksum modules. They check supported ROMs when opened and update their checksum when saved.
 
-Java source is included under `checksum/source`. To rebuild the module, run `checksum/Build_Checksum.cmd` with a JDK on `PATH`, after placing the repository files in the RomRaider folder.
+Java source is included under `checksum/source`. To rebuild the modules, run `checksum/Build_Checksum.cmd` with a JDK on `PATH`, after placing the repository files in the RomRaider folder.
 
 ## License
 
