@@ -1,0 +1,11 @@
+/checksum/build/
+*.log
+*.bak
+*.tmp
+Thumbs.db
+.DS_Store
+*.zip
+*.class
+*.bin
+*.rom
+*.hex

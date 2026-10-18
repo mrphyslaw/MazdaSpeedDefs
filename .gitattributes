@@ -1,0 +1,4 @@
+# Preserve published bytes so the file hashes remain consistent.
+* -text
+*.bin binary
+*.jar binary
