@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9 - 2026-10-18
+
+- Added stock injection-phase maps, temperature correction, blending and fixed-value controls to two definitions.
+- Retained existing injector characterization and checksum support.
+- Passed native-code and RomRaider edit/save checks, followed by user manual review.
+- Injection phase uses ECU degrees; the absolute BTDC/ATDC reference remains unconfirmed.
+
 ## 0.8 - 2026-10-18
 
 - Added the L39SED000 first-draft definition and checksum module.
