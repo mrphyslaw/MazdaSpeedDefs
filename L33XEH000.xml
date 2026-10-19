@@ -12,7 +12,7 @@
       <memmodel>SH-2E family</memmodel>
       <filesize>1024kb</filesize>
       <author>mrphyslaw</author>
-      <version>0.1 first draft</version>
+      <version>0.2 injection timing draft</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL33X" />
@@ -2180,6 +2180,323 @@
         <data>212</data>
       </table>
       <description>Larger values remove warmup enrichment faster during enabled updates, down to zero.</description>
+    </table>
+    <table type="3D" name="Injection Phase - Alternate 1" category="Fueling / Injection Timing" storageaddress="0x3554c" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Alternate commanded injection phase by RPM and load, selected by ECU operating-state logic. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+    </table>
+    <table type="3D" name="Injection Phase - Alternate 2" category="Fueling / Injection Timing" storageaddress="0x35e4c" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Alternate commanded injection phase by RPM and load, selected by ECU operating-state logic. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+    </table>
+    <table type="3D" name="Injection Phase - Base" category="Fueling / Injection Timing" storageaddress="0x41de0" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>600</data>
+        <data>700</data>
+        <data>800</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Base commanded injection phase by RPM and load, before operating-state corrections. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+    </table>
+    <table type="3D" name="Injection Phase - Transition" category="Fueling / Injection Timing" storageaddress="0x359cc" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Phase blended with the base map as the ECU changes operating state. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+    </table>
+    <table type="1D" name="Injection Phase Blend Step" category="Fueling / Injection Timing" storageaddress="0x36d80" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="per update" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.00000" fineincrement="0.00001" coarseincrement="0.0001" />
+      <description>Controls how quickly phase blends toward the transition map. Higher values blend faster.</description>
+    </table>
+    <table type="1D" name="Injection Phase Fixed Value" category="Fueling / Injection Timing" storageaddress="0x36d70" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <description>Commanded injection phase used when the fixed-value override is enabled. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+    </table>
+    <table type="Switch" name="Injection Phase Fixed Value Enable" category="Fueling / Injection Timing" storageaddress="0x36d74" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+      <state name="Use Maps" data="00" />
+      <state name="Use Fixed Value" data="01" />
+      <scaling units="enabled" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <description>Enables the fixed injection phase value in place of the phase maps.</description>
+    </table>
+    <table type="3D" name="Injection Phase Temperature Correction" category="Fueling / Injection Timing" storageaddress="0x404f0" storagetype="uint8" endian="big" sizex="13" userlevel="1" sizey="7">
+      <scaling units="deg" expression="x*1+(-180)" to_byte="(x-(-180))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Current Coolant Temperature (F)" sizex="13">
+        <data>-40</data>
+        <data>-22</data>
+        <data>-4</data>
+        <data>14</data>
+        <data>32</data>
+        <data>50</data>
+        <data>68</data>
+        <data>86</data>
+        <data>104</data>
+        <data>122</data>
+        <data>140</data>
+        <data>158</data>
+        <data>176</data>
+      </table>
+      <table type="Static Y Axis" name="Stored Coolant Temperature (F)" sizey="7">
+        <data>-22</data>
+        <data>-13</data>
+        <data>-4</data>
+        <data>5</data>
+        <data>14</data>
+        <data>23</data>
+        <data>32</data>
+      </table>
+      <description>Temperature correction added to transition phase before blending. Positive values increase commanded phase.</description>
+    </table>
+    <table type="3D" name="Injection Phase Temperature Correction Multiplier" category="Fueling / Injection Timing" storageaddress="0x4054c" storagetype="float" endian="big" sizex="19" userlevel="1" sizey="20">
+      <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>600</data>
+        <data>700</data>
+        <data>800</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="20">
+        <data>0</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.4</data>
+        <data>0.5</data>
+        <data>0.6</data>
+        <data>0.7</data>
+        <data>0.8</data>
+        <data>0.9</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+      </table>
+      <description>Scales the temperature-based phase correction by RPM and load.</description>
     </table>
     <table type="2D" name="Injector Base Pulsewidth - 1" category="Fueling / Injector Characterization" storageaddress="0x34a36" storagetype="uint16" endian="big" sizex="17" userlevel="1">
       <scaling units="coefficient" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />

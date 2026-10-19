@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10 - 2026-10-18
+
+- Extended stock injection-phase controls to the remaining five definitions.
+- Preserved each stock strategy, including the earlier two-map phase calculation.
+- Passed target-native code, axis/unit and RomRaider edit/save/checksum checks; approved for publication.
+- Injection phase uses ECU degrees; the absolute BTDC/ATDC reference remains unconfirmed.
+
 ## 0.9 - 2026-10-18
 
 - Added stock injection-phase maps, temperature correction, blending and fixed-value controls to two definitions.

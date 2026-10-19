@@ -12,7 +12,7 @@
       <memmodel>SH-2E family</memmodel>
       <filesize>1024kb</filesize>
       <author>MazdaDefinitionLab</author>
-      <version>0.3 research - 243 tuning tables and 592 DTC controls</version>
+      <version>0.2 injection timing draft</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL38K" />
@@ -397,13 +397,13 @@
       <scaling units="mph" expression="x*0.621371192237334+(0)" to_byte="(x-(0))/0.621371192237334" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Vehicle speed threshold for the fuel cut request. RPM and other enable conditions also apply.</description>
     </table>
-    <table type="1D" name="Speed Limiter Threshold - Fuel Cut" category="Absolute Limits" storageaddress="0x8370" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="mph" expression="x*0.621371192237334+(0)" to_byte="(x-(0))/0.621371192237334" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Speed drop below the fuel cut threshold that clears its speed request.</description>
-    </table>
     <table type="1D" name="Speed Limiter - Throttle Close" category="Absolute Limits" storageaddress="0x9AE4" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="mph" expression="x*0.621371192237334+(0)" to_byte="(x-(0))/0.621371192237334" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Vehicle speed setpoint for throttle limiting. RPM and other enable conditions also apply.</description>
+    </table>
+    <table type="1D" name="Speed Limiter Threshold - Fuel Cut" category="Absolute Limits" storageaddress="0x8370" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="mph" expression="x*0.621371192237334+(0)" to_byte="(x-(0))/0.621371192237334" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Speed drop below the fuel cut threshold that clears its speed request.</description>
     </table>
     <table type="1D" name="Speed Limiter Threshold - Throttle Close" category="Absolute Limits" storageaddress="0x9AE8" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="mph" expression="x*0.621371192237334+(0)" to_byte="(x-(0))/0.621371192237334" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -724,6 +724,18 @@
       <scaling units="Mode" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Selects load error or pressure error for boost control correction.</description>
     </table>
+    <table type="2D" name="BCS DC Adjustment - Boost Limit Exceeded" category="Boost Control" storageaddress="0x30A08" storagetype="float" endian="big" sizex="6" userlevel="1">
+      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Overboost Amount (psi)" sizex="6">
+        <data>0</data>
+        <data>0.145</data>
+        <data>0.4351</data>
+        <data>0.7252</data>
+        <data>1.015</data>
+        <data>1.305</data>
+      </table>
+      <description>Adds to the accumulated boost solenoid duty correction when the pressure limit is exceeded.</description>
+    </table>
     <table type="2D" name="BCS DC Adjustment Barometer" category="Boost Control" storageaddress="0x30A98" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Barometric Pressure (psi)" sizex="8">
@@ -752,18 +764,6 @@
         <data>16.5</data>
       </table>
       <description>Adds boost solenoid duty to compensate for battery voltage.</description>
-    </table>
-    <table type="2D" name="BCS DC Adjustment - Boost Limit Exceeded" category="Boost Control" storageaddress="0x30A08" storagetype="float" endian="big" sizex="6" userlevel="1">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Overboost Amount (psi)" sizex="6">
-        <data>0</data>
-        <data>0.145</data>
-        <data>0.4351</data>
-        <data>0.7252</data>
-        <data>1.015</data>
-        <data>1.305</data>
-      </table>
-      <description>Adds to the accumulated boost solenoid duty correction when the pressure limit is exceeded.</description>
     </table>
     <table type="2D" name="BCS DC Adjustment Boost Target Correction (Boost Targeting Mode)" category="Boost Control" storageaddress="0x309DC" storagetype="float" endian="big" sizex="11" userlevel="1">
       <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1578,6 +1578,57 @@
       <scaling units="lb/min" expression="x*0.13227735731092655+(0)" to_byte="(x-(0))/0.13227735731092655" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Airflow boundary between long-term fuel-trim learning ranges.</description>
     </table>
+    <table type="3D" name="Open Loop Part Throttle AFR Target Knock Present" category="Fueling" storageaddress="0x26B88" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="29">
+      <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="29">
+        <data>0.25</data>
+        <data>0.3125</data>
+        <data>0.375</data>
+        <data>0.4375</data>
+        <data>0.5</data>
+        <data>0.5625</data>
+        <data>0.625</data>
+        <data>0.6875</data>
+        <data>0.75</data>
+        <data>0.8125</data>
+        <data>0.875</data>
+        <data>0.9375</data>
+        <data>1</data>
+        <data>1.0625</data>
+        <data>1.125</data>
+        <data>1.1875</data>
+        <data>1.25</data>
+        <data>1.3125</data>
+        <data>1.375</data>
+        <data>1.4375</data>
+        <data>1.5</data>
+        <data>1.5625</data>
+        <data>1.625</data>
+        <data>1.6875</data>
+        <data>1.75</data>
+        <data>1.8125</data>
+        <data>1.875</data>
+        <data>1.9375</data>
+        <data>2</data>
+      </table>
+      <description>Desired part-throttle open-loop mixture by engine speed and load for the knock-related strategy.</description>
+    </table>
     <table type="3D" name="Open Loop Part Throttle AFR Target Normal" category="Fueling" storageaddress="0x26530" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="29">
       <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
@@ -1680,7 +1731,7 @@
       </table>
       <description>Desired part-throttle open-loop mixture by engine speed and load during overload.</description>
     </table>
-    <table type="3D" name="Open Loop Part Throttle AFR Target Knock Present" category="Fueling" storageaddress="0x26B88" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="29">
+    <table type="2D" name="Open Loop WOT AFR Target Knock Present" category="Fueling" storageaddress="0xD508" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
         <data>500</data>
@@ -1698,38 +1749,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <table type="Static Y Axis" name="Load" sizex="29">
-        <data>0.25</data>
-        <data>0.3125</data>
-        <data>0.375</data>
-        <data>0.4375</data>
-        <data>0.5</data>
-        <data>0.5625</data>
-        <data>0.625</data>
-        <data>0.6875</data>
-        <data>0.75</data>
-        <data>0.8125</data>
-        <data>0.875</data>
-        <data>0.9375</data>
-        <data>1</data>
-        <data>1.0625</data>
-        <data>1.125</data>
-        <data>1.1875</data>
-        <data>1.25</data>
-        <data>1.3125</data>
-        <data>1.375</data>
-        <data>1.4375</data>
-        <data>1.5</data>
-        <data>1.5625</data>
-        <data>1.625</data>
-        <data>1.6875</data>
-        <data>1.75</data>
-        <data>1.8125</data>
-        <data>1.875</data>
-        <data>1.9375</data>
-        <data>2</data>
-      </table>
-      <description>Desired part-throttle open-loop mixture by engine speed and load for the knock-related strategy.</description>
+      <description>Desired wide-open-throttle mixture by engine speed for the knock-related strategy.</description>
     </table>
     <table type="2D" name="Open Loop WOT AFR Target Normal" category="Fueling" storageaddress="0xd4d0" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1770,26 +1790,6 @@
         <data>7000</data>
       </table>
       <description>Desired wide-open-throttle mixture by engine speed during overload.</description>
-    </table>
-    <table type="2D" name="Open Loop WOT AFR Target Knock Present" category="Fueling" storageaddress="0xD508" storagetype="float" endian="big" sizex="14" userlevel="1">
-      <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Desired wide-open-throttle mixture by engine speed for the knock-related strategy.</description>
     </table>
     <table type="3D" name="Supplemental Fuel Enrichment - Additional" category="Fueling" storageaddress="0x43104" storagetype="float" endian="big" sizex="7" userlevel="1" sizey="5">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -2165,12 +2165,17 @@
       </table>
       <description>Larger values remove warmup enrichment faster during enabled updates, down to zero.</description>
     </table>
-    <table type="2D" name="Closed Loop Open Loop Load Threshold 1" category="Fueling / Transition" storageaddress="0xA34C" storagetype="float" endian="big" sizex="14" userlevel="1">
-      <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="RPM" sizex="14">
+    <table type="3D" name="Injection Phase - Alternate 1" category="Fueling / Injection Timing" storageaddress="0x2e870" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
         <data>1000</data>
+        <data>1250</data>
         <data>1500</data>
+        <data>1750</data>
         <data>2000</data>
         <data>2500</data>
         <data>3000</data>
@@ -2183,14 +2188,51 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Load threshold by RPM that triggers transition to open-loop fueling.</description>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Alternate commanded injection phase by RPM and load, selected by ECU operating-state logic. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
     </table>
-    <table type="2D" name="Closed Loop Open Loop Load Threshold 2" category="Fueling / Transition" storageaddress="0xA384" storagetype="float" endian="big" sizex="14" userlevel="1">
-      <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="RPM" sizex="14">
+    <table type="3D" name="Injection Phase - Alternate 2" category="Fueling / Injection Timing" storageaddress="0x2f170" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
         <data>1000</data>
+        <data>1250</data>
         <data>1500</data>
+        <data>1750</data>
         <data>2000</data>
         <data>2500</data>
         <data>3000</data>
@@ -2203,14 +2245,51 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Load threshold by RPM that triggers transition to open-loop fueling.</description>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Alternate commanded injection phase by RPM and load, selected by ECU operating-state logic. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
     </table>
-    <table type="2D" name="Closed Loop Open Loop Load Threshold 3" category="Fueling / Transition" storageaddress="0xD1D4" storagetype="float" endian="big" sizex="14" userlevel="1">
-      <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="RPM" sizex="14">
+    <table type="3D" name="Injection Phase - Base" category="Fueling / Injection Timing" storageaddress="0x412c4" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
+        <data>600</data>
+        <data>700</data>
+        <data>800</data>
         <data>1000</data>
+        <data>1250</data>
         <data>1500</data>
+        <data>1750</data>
         <data>2000</data>
         <data>2500</data>
         <data>3000</data>
@@ -2223,14 +2302,51 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Load threshold by RPM that triggers transition to open-loop fueling.</description>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Base commanded injection phase by RPM and load, before operating-state corrections. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
     </table>
-    <table type="2D" name="Closed Loop Open Loop Load Threshold 4" category="Fueling / Transition" storageaddress="0xD694" storagetype="float" endian="big" sizex="14" userlevel="1">
-      <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="RPM" sizex="14">
+    <table type="3D" name="Injection Phase - Transition" category="Fueling / Injection Timing" storageaddress="0x2ecf0" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
         <data>1000</data>
+        <data>1250</data>
         <data>1500</data>
+        <data>1750</data>
         <data>2000</data>
         <data>2500</data>
         <data>3000</data>
@@ -2243,7 +2359,128 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Load threshold by RPM that triggers transition to open-loop fueling.</description>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Phase blended with the base map as the ECU changes operating state. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+    </table>
+    <table type="1D" name="Injection Phase Blend Step" category="Fueling / Injection Timing" storageaddress="0x300a4" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="per update" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.00000" fineincrement="0.00001" coarseincrement="0.0001" />
+      <description>Controls how quickly phase blends toward the transition map. Higher values blend faster.</description>
+    </table>
+    <table type="1D" name="Injection Phase Fixed Value" category="Fueling / Injection Timing" storageaddress="0x30094" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <description>Commanded injection phase used when the fixed-value override is enabled. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+    </table>
+    <table type="Switch" name="Injection Phase Fixed Value Enable" category="Fueling / Injection Timing" storageaddress="0x30098" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+      <state name="Use Maps" data="00" />
+      <state name="Use Fixed Value" data="01" />
+      <scaling units="enabled" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <description>Enables the fixed injection phase value in place of the phase maps.</description>
+    </table>
+    <table type="3D" name="Injection Phase Temperature Correction" category="Fueling / Injection Timing" storageaddress="0x41738" storagetype="uint8" endian="big" sizex="13" userlevel="1" sizey="7">
+      <scaling units="deg" expression="x*1+(-180)" to_byte="(x-(-180))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Current Coolant Temperature (F)" sizex="13">
+        <data>-40</data>
+        <data>-22</data>
+        <data>-4</data>
+        <data>14</data>
+        <data>32</data>
+        <data>50</data>
+        <data>68</data>
+        <data>86</data>
+        <data>104</data>
+        <data>122</data>
+        <data>140</data>
+        <data>158</data>
+        <data>176</data>
+      </table>
+      <table type="Static Y Axis" name="Stored Coolant Temperature (F)" sizey="7">
+        <data>-22</data>
+        <data>-13</data>
+        <data>-4</data>
+        <data>5</data>
+        <data>14</data>
+        <data>23</data>
+        <data>32</data>
+      </table>
+      <description>Temperature correction added to transition phase before blending. Positive values increase commanded phase.</description>
+    </table>
+    <table type="3D" name="Injection Phase Temperature Correction Multiplier" category="Fueling / Injection Timing" storageaddress="0x41794" storagetype="float" endian="big" sizex="19" userlevel="1" sizey="20">
+      <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>600</data>
+        <data>700</data>
+        <data>800</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="20">
+        <data>0</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.4</data>
+        <data>0.5</data>
+        <data>0.6</data>
+        <data>0.7</data>
+        <data>0.8</data>
+        <data>0.9</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+      </table>
+      <description>Scales the temperature-based phase correction by RPM and load.</description>
     </table>
     <table type="2D" name="Injector Base Pulsewidth - 1" category="Fueling / Injector Characterization" storageaddress="0x2dd66" storagetype="uint16" endian="big" sizex="17" userlevel="1">
       <scaling units="coefficient" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
@@ -2343,6 +2580,86 @@
         <data>1667.1549726108</data>
       </table>
       <description>Corrects base pulse width for injector nonlinearity. Values above one lengthen the pulse.</description>
+    </table>
+    <table type="2D" name="Closed Loop Open Loop Load Threshold 1" category="Fueling / Transition" storageaddress="0xA34C" storagetype="float" endian="big" sizex="14" userlevel="1">
+      <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="RPM" sizex="14">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Load threshold by RPM that triggers transition to open-loop fueling.</description>
+    </table>
+    <table type="2D" name="Closed Loop Open Loop Load Threshold 2" category="Fueling / Transition" storageaddress="0xA384" storagetype="float" endian="big" sizex="14" userlevel="1">
+      <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="RPM" sizex="14">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Load threshold by RPM that triggers transition to open-loop fueling.</description>
+    </table>
+    <table type="2D" name="Closed Loop Open Loop Load Threshold 3" category="Fueling / Transition" storageaddress="0xD1D4" storagetype="float" endian="big" sizex="14" userlevel="1">
+      <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="RPM" sizex="14">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Load threshold by RPM that triggers transition to open-loop fueling.</description>
+    </table>
+    <table type="2D" name="Closed Loop Open Loop Load Threshold 4" category="Fueling / Transition" storageaddress="0xD694" storagetype="float" endian="big" sizex="14" userlevel="1">
+      <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="RPM" sizex="14">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Load threshold by RPM that triggers transition to open-loop fueling.</description>
     </table>
     <table type="1D" name="Effective Final Drive - 1st - 4th" category="Gear Ratios" storageaddress="0x9454" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="ratio" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -2636,6 +2953,94 @@
       </table>
       <description>Maximum permitted ignition timing indexed by load and engine speed under abnormal operating conditions.</description>
     </table>
+    <table type="3D" name="Closed Loop Base Timing Abnormal" category="Ignition" storageaddress="0x1E1C4" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
+      <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="28">
+        <data>0.3125</data>
+        <data>0.375</data>
+        <data>0.4375</data>
+        <data>0.5</data>
+        <data>0.5625</data>
+        <data>0.625</data>
+        <data>0.6875</data>
+        <data>0.75</data>
+        <data>0.8125</data>
+        <data>0.875</data>
+        <data>0.9375</data>
+        <data>1</data>
+        <data>1.0625</data>
+        <data>1.125</data>
+        <data>1.1875</data>
+        <data>1.25</data>
+        <data>1.3125</data>
+        <data>1.375</data>
+        <data>1.4375</data>
+        <data>1.5</data>
+        <data>1.5625</data>
+        <data>1.625</data>
+        <data>1.6875</data>
+        <data>1.75</data>
+        <data>1.8125</data>
+        <data>1.875</data>
+        <data>1.9375</data>
+        <data>2</data>
+      </table>
+      <description>Closed-loop base ignition timing under abnormal operating conditions; blended with open-loop timing during the closed/open-loop transition.</description>
+    </table>
+    <table type="3D" name="Closed Loop Base Timing Abnormal Overload" category="Ignition" storageaddress="0x1E544" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
+      <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="28">
+        <data>0.3125</data>
+        <data>0.375</data>
+        <data>0.4375</data>
+        <data>0.5</data>
+        <data>0.5625</data>
+        <data>0.625</data>
+        <data>0.6875</data>
+        <data>0.75</data>
+        <data>0.8125</data>
+        <data>0.875</data>
+        <data>0.9375</data>
+        <data>1</data>
+        <data>1.0625</data>
+        <data>1.125</data>
+        <data>1.1875</data>
+        <data>1.25</data>
+        <data>1.3125</data>
+        <data>1.375</data>
+        <data>1.4375</data>
+        <data>1.5</data>
+        <data>1.5625</data>
+        <data>1.625</data>
+        <data>1.6875</data>
+        <data>1.75</data>
+        <data>1.8125</data>
+        <data>1.875</data>
+        <data>1.9375</data>
+        <data>2</data>
+      </table>
+      <description>Base closed-loop ignition timing for abnormal operation with overload.</description>
+    </table>
     <table type="3D" name="Closed Loop Base Timing Normal" category="Ignition" storageaddress="0x1E8C4" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
       <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
@@ -2736,94 +3141,6 @@
       </table>
       <description>Base closed-loop ignition timing under overload. Blended with open-loop timing during transition.</description>
     </table>
-    <table type="3D" name="Closed Loop Base Timing Abnormal" category="Ignition" storageaddress="0x1E1C4" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
-      <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizex="28">
-        <data>0.3125</data>
-        <data>0.375</data>
-        <data>0.4375</data>
-        <data>0.5</data>
-        <data>0.5625</data>
-        <data>0.625</data>
-        <data>0.6875</data>
-        <data>0.75</data>
-        <data>0.8125</data>
-        <data>0.875</data>
-        <data>0.9375</data>
-        <data>1</data>
-        <data>1.0625</data>
-        <data>1.125</data>
-        <data>1.1875</data>
-        <data>1.25</data>
-        <data>1.3125</data>
-        <data>1.375</data>
-        <data>1.4375</data>
-        <data>1.5</data>
-        <data>1.5625</data>
-        <data>1.625</data>
-        <data>1.6875</data>
-        <data>1.75</data>
-        <data>1.8125</data>
-        <data>1.875</data>
-        <data>1.9375</data>
-        <data>2</data>
-      </table>
-      <description>Closed-loop base ignition timing under abnormal operating conditions; blended with open-loop timing during the closed/open-loop transition.</description>
-    </table>
-    <table type="3D" name="Closed Loop Base Timing Abnormal Overload" category="Ignition" storageaddress="0x1E544" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
-      <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizex="28">
-        <data>0.3125</data>
-        <data>0.375</data>
-        <data>0.4375</data>
-        <data>0.5</data>
-        <data>0.5625</data>
-        <data>0.625</data>
-        <data>0.6875</data>
-        <data>0.75</data>
-        <data>0.8125</data>
-        <data>0.875</data>
-        <data>0.9375</data>
-        <data>1</data>
-        <data>1.0625</data>
-        <data>1.125</data>
-        <data>1.1875</data>
-        <data>1.25</data>
-        <data>1.3125</data>
-        <data>1.375</data>
-        <data>1.4375</data>
-        <data>1.5</data>
-        <data>1.5625</data>
-        <data>1.625</data>
-        <data>1.6875</data>
-        <data>1.75</data>
-        <data>1.8125</data>
-        <data>1.875</data>
-        <data>1.9375</data>
-        <data>2</data>
-      </table>
-      <description>Base closed-loop ignition timing for abnormal operation with overload.</description>
-    </table>
     <table type="3D" name="Closed Loop Max Ignition Timing" category="Ignition" storageaddress="0x1FE54" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="31">
       <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
@@ -2876,32 +3193,6 @@
         <data>2</data>
       </table>
       <description>Maximum closed-loop ignition timing under normal conditions; blended with open-loop timing during transition.</description>
-    </table>
-    <table type="3D" name="High BAT/ECT Retard No Knock" category="Ignition" storageaddress="0x1F648" storagetype="float" endian="big" sizex="9" userlevel="1" sizey="9">
-      <scaling units="° timing retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Boost Air Temperature (°F)" sizex="9">
-        <data>68</data>
-        <data>86</data>
-        <data>104</data>
-        <data>122</data>
-        <data>140</data>
-        <data>158</data>
-        <data>176</data>
-        <data>194</data>
-        <data>212</data>
-      </table>
-      <table type="Static Y Axis" name="Engine Coolant Temperature (°F)" sizex="9">
-        <data>104</data>
-        <data>122</data>
-        <data>140</data>
-        <data>158</data>
-        <data>176</data>
-        <data>194</data>
-        <data>212</data>
-        <data>230</data>
-        <data>248</data>
-      </table>
-      <description>Temperature-based ignition retard for the alternate operating mode.</description>
     </table>
     <table type="3D" name="High BAT/ECT Retard Knocking" category="Ignition" storageaddress="0x1F504" storagetype="float" endian="big" sizex="9" userlevel="1" sizey="9">
       <scaling units="° timing retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3028,6 +3319,32 @@
         <data>2</data>
       </table>
       <description>Alternate engine-speed and load multiplier for temperature-based ignition retard.</description>
+    </table>
+    <table type="3D" name="High BAT/ECT Retard No Knock" category="Ignition" storageaddress="0x1F648" storagetype="float" endian="big" sizex="9" userlevel="1" sizey="9">
+      <scaling units="° timing retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Boost Air Temperature (°F)" sizex="9">
+        <data>68</data>
+        <data>86</data>
+        <data>104</data>
+        <data>122</data>
+        <data>140</data>
+        <data>158</data>
+        <data>176</data>
+        <data>194</data>
+        <data>212</data>
+      </table>
+      <table type="Static Y Axis" name="Engine Coolant Temperature (°F)" sizex="9">
+        <data>104</data>
+        <data>122</data>
+        <data>140</data>
+        <data>158</data>
+        <data>176</data>
+        <data>194</data>
+        <data>212</data>
+        <data>230</data>
+        <data>248</data>
+      </table>
+      <description>Temperature-based ignition retard for the alternate operating mode.</description>
     </table>
     <table type="3D" name="Ignition Coolant and Load Correction" category="Ignition" storageaddress="0x21eec" storagetype="float" endian="big" sizex="6" userlevel="1" sizey="17">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3259,6 +3576,10 @@
       </table>
       <description>Multiplier applied to knock retard by load and engine speed.</description>
     </table>
+    <table type="1D" name="Knock Retard Threshold Max RPM" category="Ignition" storageaddress="0x813c" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Upper engine-speed threshold for the knock-retard operating window. A separate mode can override it.</description>
+    </table>
     <table type="1D" name="Knock Retard Threshold Min ECT" category="Ignition" storageaddress="0x81c4" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="F" expression="x*1.8+(32)" to_byte="(x-(32))/1.8" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Minimum coolant temperature for this knock-retard operating mode.</description>
@@ -3307,10 +3628,6 @@
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Lower engine-speed threshold for the knock-retard operating window.</description>
     </table>
-    <table type="1D" name="Knock Retard Threshold Max RPM" category="Ignition" storageaddress="0x813c" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Upper engine-speed threshold for the knock-retard operating window. A separate mode can override it.</description>
-    </table>
     <table type="1D" name="Knock Retard Timer Decrement Step Size 1" category="Ignition" storageaddress="0x8c54" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="Timer Ticks" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Reload value for this knock-retard recovery timer. Larger values lengthen the interval.</description>
@@ -3318,6 +3635,94 @@
     <table type="1D" name="Knock Retard Timer Decrement Step Size 2" category="Ignition" storageaddress="0x8bb4" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="Timer Ticks" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Reload value for this knock-retard recovery timer. Larger values lengthen the interval.</description>
+    </table>
+    <table type="3D" name="Open Loop Base Timing Abnormal" category="Ignition" storageaddress="0x1CE84" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
+      <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="28">
+        <data>0.3125</data>
+        <data>0.375</data>
+        <data>0.4375</data>
+        <data>0.5</data>
+        <data>0.5625</data>
+        <data>0.625</data>
+        <data>0.6875</data>
+        <data>0.75</data>
+        <data>0.8125</data>
+        <data>0.875</data>
+        <data>0.9375</data>
+        <data>1</data>
+        <data>1.0625</data>
+        <data>1.125</data>
+        <data>1.1875</data>
+        <data>1.25</data>
+        <data>1.3125</data>
+        <data>1.375</data>
+        <data>1.4375</data>
+        <data>1.5</data>
+        <data>1.5625</data>
+        <data>1.625</data>
+        <data>1.6875</data>
+        <data>1.75</data>
+        <data>1.8125</data>
+        <data>1.875</data>
+        <data>1.9375</data>
+        <data>2</data>
+      </table>
+      <description>Open-loop base ignition timing under abnormal operating conditions, blended with the closed-loop table during transition.</description>
+    </table>
+    <table type="3D" name="Open Loop Base Timing Abnormal Overload" category="Ignition" storageaddress="0x1D204" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
+      <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="28">
+        <data>0.3125</data>
+        <data>0.375</data>
+        <data>0.4375</data>
+        <data>0.5</data>
+        <data>0.5625</data>
+        <data>0.625</data>
+        <data>0.6875</data>
+        <data>0.75</data>
+        <data>0.8125</data>
+        <data>0.875</data>
+        <data>0.9375</data>
+        <data>1</data>
+        <data>1.0625</data>
+        <data>1.125</data>
+        <data>1.1875</data>
+        <data>1.25</data>
+        <data>1.3125</data>
+        <data>1.375</data>
+        <data>1.4375</data>
+        <data>1.5</data>
+        <data>1.5625</data>
+        <data>1.625</data>
+        <data>1.6875</data>
+        <data>1.75</data>
+        <data>1.8125</data>
+        <data>1.875</data>
+        <data>1.9375</data>
+        <data>2</data>
+      </table>
+      <description>Open-loop base ignition timing under abnormal operating conditions with overload, blended with the closed-loop table during transition.</description>
     </table>
     <table type="3D" name="Open Loop Base Timing Normal" category="Ignition" storageaddress="0x1D584" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
       <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3418,94 +3823,6 @@
         <data>2</data>
       </table>
       <description>Base open-loop ignition timing during overload. Blended with closed-loop timing during transition.</description>
-    </table>
-    <table type="3D" name="Open Loop Base Timing Abnormal" category="Ignition" storageaddress="0x1CE84" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
-      <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizex="28">
-        <data>0.3125</data>
-        <data>0.375</data>
-        <data>0.4375</data>
-        <data>0.5</data>
-        <data>0.5625</data>
-        <data>0.625</data>
-        <data>0.6875</data>
-        <data>0.75</data>
-        <data>0.8125</data>
-        <data>0.875</data>
-        <data>0.9375</data>
-        <data>1</data>
-        <data>1.0625</data>
-        <data>1.125</data>
-        <data>1.1875</data>
-        <data>1.25</data>
-        <data>1.3125</data>
-        <data>1.375</data>
-        <data>1.4375</data>
-        <data>1.5</data>
-        <data>1.5625</data>
-        <data>1.625</data>
-        <data>1.6875</data>
-        <data>1.75</data>
-        <data>1.8125</data>
-        <data>1.875</data>
-        <data>1.9375</data>
-        <data>2</data>
-      </table>
-      <description>Open-loop base ignition timing under abnormal operating conditions, blended with the closed-loop table during transition.</description>
-    </table>
-    <table type="3D" name="Open Loop Base Timing Abnormal Overload" category="Ignition" storageaddress="0x1D204" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
-      <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizex="28">
-        <data>0.3125</data>
-        <data>0.375</data>
-        <data>0.4375</data>
-        <data>0.5</data>
-        <data>0.5625</data>
-        <data>0.625</data>
-        <data>0.6875</data>
-        <data>0.75</data>
-        <data>0.8125</data>
-        <data>0.875</data>
-        <data>0.9375</data>
-        <data>1</data>
-        <data>1.0625</data>
-        <data>1.125</data>
-        <data>1.1875</data>
-        <data>1.25</data>
-        <data>1.3125</data>
-        <data>1.375</data>
-        <data>1.4375</data>
-        <data>1.5</data>
-        <data>1.5625</data>
-        <data>1.625</data>
-        <data>1.6875</data>
-        <data>1.75</data>
-        <data>1.8125</data>
-        <data>1.875</data>
-        <data>1.9375</data>
-        <data>2</data>
-      </table>
-      <description>Open-loop base ignition timing under abnormal operating conditions with overload, blended with the closed-loop table during transition.</description>
     </table>
     <table type="3D" name="Open Loop Max Ignition Timing" category="Ignition" storageaddress="0x1F78C" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="31">
       <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3743,6 +4060,46 @@
       </table>
       <description>Alternate knock-retard step by engine speed and load. Inactive with the original strategy selector.</description>
     </table>
+    <table type="3D" name="APP Requested Load Knocking" category="Load Targeting" storageaddress="0x34D68" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
+      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Accelerator pedal position (%)" sizex="17">
+        <data>0</data>
+        <data>6.25</data>
+        <data>12.5</data>
+        <data>18.75</data>
+        <data>25</data>
+        <data>31.25</data>
+        <data>37.5</data>
+        <data>43.75</data>
+        <data>50</data>
+        <data>56.25</data>
+        <data>62.5</data>
+        <data>68.75</data>
+        <data>75</data>
+        <data>81.25</data>
+        <data>87.5</data>
+        <data>93.75</data>
+        <data>100</data>
+      </table>
+      <description>Requested load by engine speed and accelerator position for the knock-related strategy. Other load limits still apply.</description>
+    </table>
     <table type="3D" name="APP Requested Load Normal" category="Load Targeting" storageaddress="0x3496C" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
@@ -3823,46 +4180,6 @@
       </table>
       <description>Base requested load by RPM and accelerator pedal position while overload is detected.</description>
     </table>
-    <table type="3D" name="APP Requested Load Knocking" category="Load Targeting" storageaddress="0x34D68" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
-      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Accelerator pedal position (%)" sizex="17">
-        <data>0</data>
-        <data>6.25</data>
-        <data>12.5</data>
-        <data>18.75</data>
-        <data>25</data>
-        <data>31.25</data>
-        <data>37.5</data>
-        <data>43.75</data>
-        <data>50</data>
-        <data>56.25</data>
-        <data>62.5</data>
-        <data>68.75</data>
-        <data>75</data>
-        <data>81.25</data>
-        <data>87.5</data>
-        <data>93.75</data>
-        <data>100</data>
-      </table>
-      <description>Requested load by engine speed and accelerator position for the knock-related strategy. Other load limits still apply.</description>
-    </table>
     <table type="2D" name="BCS DC Adjustment - Load Target Correction - Incremental" category="Load Targeting" storageaddress="0x30A4C" storagetype="float" endian="big" sizex="11" userlevel="1">
       <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Load target deviation (Load)" sizex="11">
@@ -3926,111 +4243,6 @@
       </table>
       <description>Requested load limit for first gear with high boost air temperature. Blends from the low temperature limit.</description>
     </table>
-    <table type="2D" name="Requested Load - 2nd Gear Limit High BAT" category="Load Targeting" storageaddress="0x402C8" storagetype="float" endian="big" sizex="15" userlevel="1">
-      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Requested load limit for second gear with high boost air temperature. Blends from the low temperature limit.</description>
-    </table>
-    <table type="2D" name="Requested Load - 3rd Gear Limit High BAT" category="Load Targeting" storageaddress="0x4028C" storagetype="float" endian="big" sizex="15" userlevel="1">
-      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Requested load limit for third gear with high boost air temperature. Blends from the low temperature limit.</description>
-    </table>
-    <table type="2D" name="Requested Load - 4th Gear Limit High BAT" category="Load Targeting" storageaddress="0x40250" storagetype="float" endian="big" sizex="15" userlevel="1">
-      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Requested load limit for fourth gear with high boost air temperature. Blends from the low temperature limit.</description>
-    </table>
-    <table type="2D" name="Requested Load - 5th Gear Limit High BAT" category="Load Targeting" storageaddress="0x40214" storagetype="float" endian="big" sizex="15" userlevel="1">
-      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Requested load limit for fifth gear with high boost air temperature. Blends from the low temperature limit.</description>
-    </table>
-    <table type="2D" name="Requested Load - 6th Gear Limit High BAT" category="Load Targeting" storageaddress="0x401D8" storagetype="float" endian="big" sizex="15" userlevel="1">
-      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Requested load limit for sixth gear with high boost air temperature. Blends from the low temperature limit.</description>
-    </table>
     <table type="2D" name="Requested Load - 1st Gear Limit Low BAT" category="Load Targeting" storageaddress="0x4019C" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
@@ -4051,6 +4263,27 @@
         <data>7000</data>
       </table>
       <description>Requested load limit for first gear with low boost air temperature. Blends toward the high temperature limit.</description>
+    </table>
+    <table type="2D" name="Requested Load - 2nd Gear Limit High BAT" category="Load Targeting" storageaddress="0x402C8" storagetype="float" endian="big" sizex="15" userlevel="1">
+      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Requested load limit for second gear with high boost air temperature. Blends from the low temperature limit.</description>
     </table>
     <table type="2D" name="Requested Load - 2nd Gear Limit Low BAT" category="Load Targeting" storageaddress="0x40160" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4073,6 +4306,27 @@
       </table>
       <description>Requested load limit for second gear with low boost air temperature. Blends toward the high temperature limit.</description>
     </table>
+    <table type="2D" name="Requested Load - 3rd Gear Limit High BAT" category="Load Targeting" storageaddress="0x4028C" storagetype="float" endian="big" sizex="15" userlevel="1">
+      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Requested load limit for third gear with high boost air temperature. Blends from the low temperature limit.</description>
+    </table>
     <table type="2D" name="Requested Load - 3rd Gear Limit Low BAT" category="Load Targeting" storageaddress="0x40124" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
@@ -4093,6 +4347,27 @@
         <data>7000</data>
       </table>
       <description>Requested load limit for third gear with low boost air temperature. Blends toward the high temperature limit.</description>
+    </table>
+    <table type="2D" name="Requested Load - 4th Gear Limit High BAT" category="Load Targeting" storageaddress="0x40250" storagetype="float" endian="big" sizex="15" userlevel="1">
+      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Requested load limit for fourth gear with high boost air temperature. Blends from the low temperature limit.</description>
     </table>
     <table type="2D" name="Requested Load - 4th Gear Limit Low BAT" category="Load Targeting" storageaddress="0x400E8" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4115,6 +4390,27 @@
       </table>
       <description>Requested load limit for fourth gear with low boost air temperature. Blends toward the high temperature limit.</description>
     </table>
+    <table type="2D" name="Requested Load - 5th Gear Limit High BAT" category="Load Targeting" storageaddress="0x40214" storagetype="float" endian="big" sizex="15" userlevel="1">
+      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Requested load limit for fifth gear with high boost air temperature. Blends from the low temperature limit.</description>
+    </table>
     <table type="2D" name="Requested Load - 5th Gear Limit Low BAT" category="Load Targeting" storageaddress="0x400AC" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
@@ -4135,6 +4431,27 @@
         <data>7000</data>
       </table>
       <description>Requested load limit for fifth gear with low boost air temperature. Blends toward the high temperature limit.</description>
+    </table>
+    <table type="2D" name="Requested Load - 6th Gear Limit High BAT" category="Load Targeting" storageaddress="0x401D8" storagetype="float" endian="big" sizex="15" userlevel="1">
+      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Requested load limit for sixth gear with high boost air temperature. Blends from the low temperature limit.</description>
     </table>
     <table type="2D" name="Requested Load - 6th Gear Limit Low BAT" category="Load Targeting" storageaddress="0x40070" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4249,114 +4566,6 @@
       </table>
       <description>Requested-load multiplier using current and retained engine speed.</description>
     </table>
-    <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 3rd Gear Normal" category="Load Targeting" storageaddress="0x32650" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
-      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Current engine speed (RPM)" sizex="14">
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Retained engine speed (RPM)" sizex="14">
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Requested-load multiplier using current and retained engine speed.</description>
-    </table>
-    <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 4th Gear Normal" category="Load Targeting" storageaddress="0x32C70" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
-      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Current engine speed (RPM)" sizex="14">
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Retained engine speed (RPM)" sizex="14">
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Requested-load multiplier using current and retained engine speed.</description>
-    </table>
-    <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 5th-6th Gear Normal" category="Load Targeting" storageaddress="0x33290" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
-      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Current engine speed (RPM)" sizex="14">
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Retained engine speed (RPM)" sizex="14">
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <description>Requested-load multiplier using current and retained engine speed. Bypassed by this ROM's original gear-range settings.</description>
-    </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 1st - 2nd Gear with APP Increase" category="Load Targeting" storageaddress="0x31D20" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Current engine speed (RPM)" sizex="14">
@@ -4392,6 +4601,42 @@
         <data>7000</data>
       </table>
       <description>Requested-load multiplier during accelerator increases, using current and retained engine speed.</description>
+    </table>
+    <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 3rd Gear Normal" category="Load Targeting" storageaddress="0x32650" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
+      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Current engine speed (RPM)" sizex="14">
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Retained engine speed (RPM)" sizex="14">
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Requested-load multiplier using current and retained engine speed.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 3rd Gear with APP Increase" category="Load Targeting" storageaddress="0x32340" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4429,6 +4674,42 @@
       </table>
       <description>Requested-load multiplier during accelerator increases, using current and retained engine speed.</description>
     </table>
+    <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 4th Gear Normal" category="Load Targeting" storageaddress="0x32C70" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
+      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Current engine speed (RPM)" sizex="14">
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Retained engine speed (RPM)" sizex="14">
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Requested-load multiplier using current and retained engine speed.</description>
+    </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 4th Gear with APP Increase" category="Load Targeting" storageaddress="0x32960" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Current engine speed (RPM)" sizex="14">
@@ -4464,6 +4745,42 @@
         <data>7000</data>
       </table>
       <description>Requested-load multiplier during accelerator increases, using current and retained engine speed.</description>
+    </table>
+    <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 5th-6th Gear Normal" category="Load Targeting" storageaddress="0x33290" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
+      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Current engine speed (RPM)" sizex="14">
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Retained engine speed (RPM)" sizex="14">
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Requested-load multiplier using current and retained engine speed. Bypassed by this ROM's original gear-range settings.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 5th-6th Gear with APP Increase" category="Load Targeting" storageaddress="0x32F80" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4924,41 +5241,86 @@
       </table>
       <description>Airflow represented by each MAF sensor voltage.</description>
     </table>
-    <table type="1D" name="MAP Scale Additive - ECU Boost Mgmt" category="Sensor Calibration" storageaddress="0x506c4" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="Additive (unit not stated)" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Offset for converting MAP sensor voltage to pressure for pressure control.</description>
-    </table>
-    <table type="1D" name="MAP Scale Base Multiplier - ECU Boost Mgmt" category="Sensor Calibration" storageaddress="0x506cc" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Primary multiplier for converting MAP sensor voltage to pressure for pressure control.</description>
-    </table>
-    <table type="1D" name="MAP Scale Second Multiplier - ECU Boost Mgmt" category="Sensor Calibration" storageaddress="0x506c8" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Secondary multiplier for converting MAP sensor voltage to pressure for pressure control.</description>
-    </table>
     <table type="1D" name="MAP Scale Additive - DTC Reporting" category="Sensor Calibration" storageaddress="0x73a70" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="Additive (unit not stated)" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Offset for converting MAP sensor voltage to pressure during startup.</description>
     </table>
-    <table type="1D" name="MAP Scale Base Multiplier - DTC Reporting" category="Sensor Calibration" storageaddress="0x73a68" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Primary multiplier for converting MAP sensor voltage to pressure during startup.</description>
-    </table>
-    <table type="1D" name="MAP Scale Second Multiplier - DTC Reporting" category="Sensor Calibration" storageaddress="0x73a6c" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Secondary multiplier for converting MAP sensor voltage to pressure during startup.</description>
+    <table type="1D" name="MAP Scale Additive - ECU Boost Mgmt" category="Sensor Calibration" storageaddress="0x506c4" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Additive (unit not stated)" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Offset for converting MAP sensor voltage to pressure for pressure control.</description>
     </table>
     <table type="1D" name="MAP Scale Additive - Logging" category="Sensor Calibration" storageaddress="0xb164c" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="Additive (unit not stated)" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Offset for converting MAP sensor voltage to pressure for pressure logging.</description>
     </table>
+    <table type="1D" name="MAP Scale Base Multiplier - DTC Reporting" category="Sensor Calibration" storageaddress="0x73a68" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Primary multiplier for converting MAP sensor voltage to pressure during startup.</description>
+    </table>
+    <table type="1D" name="MAP Scale Base Multiplier - ECU Boost Mgmt" category="Sensor Calibration" storageaddress="0x506cc" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Primary multiplier for converting MAP sensor voltage to pressure for pressure control.</description>
+    </table>
     <table type="1D" name="MAP Scale Base Multiplier - Logging" category="Sensor Calibration" storageaddress="0xb1644" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Primary multiplier for converting MAP sensor voltage to pressure for pressure logging.</description>
     </table>
+    <table type="1D" name="MAP Scale Second Multiplier - DTC Reporting" category="Sensor Calibration" storageaddress="0x73a6c" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Secondary multiplier for converting MAP sensor voltage to pressure during startup.</description>
+    </table>
+    <table type="1D" name="MAP Scale Second Multiplier - ECU Boost Mgmt" category="Sensor Calibration" storageaddress="0x506c8" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Secondary multiplier for converting MAP sensor voltage to pressure for pressure control.</description>
+    </table>
     <table type="1D" name="MAP Scale Second Multiplier - Logging" category="Sensor Calibration" storageaddress="0xb1648" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Secondary multiplier for converting MAP sensor voltage to pressure for pressure logging.</description>
+    </table>
+    <table type="2D" name="High RPM Shift Retard - RPM" category="Shift Related" storageaddress="0xC148" storagetype="float" endian="big" sizex="11" userlevel="1">
+      <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="RPM" sizex="11">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+      </table>
+      <description>Engine-speed adjustment to the high-RPM shift-retard correction.</description>
+    </table>
+    <table type="3D" name="High RPM Shift Retard - RPM vs. Gear" category="Shift Related" storageaddress="0x25D70" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="6">
+      <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="RPM" sizex="14">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Current Gear" sizex="6">
+        <data>1</data>
+        <data>2</data>
+        <data>3</data>
+        <data>4</data>
+        <data>5</data>
+        <data>6</data>
+      </table>
+      <description>Limits shift retard by engine speed and gear.</description>
     </table>
     <table type="1D" name="High RPM Shift Retard APP Threshold" category="Shift Related" storageaddress="0x99cc" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="APP (0-100)" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5023,23 +5385,6 @@
       </table>
       <description>Scales shift retard by captured gear and engine-event counter. Other correction limits still apply.</description>
     </table>
-    <table type="2D" name="High RPM Shift Retard - RPM" category="Shift Related" storageaddress="0xC148" storagetype="float" endian="big" sizex="11" userlevel="1">
-      <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="RPM" sizex="11">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-      </table>
-      <description>Engine-speed adjustment to the high-RPM shift-retard correction.</description>
-    </table>
     <table type="2D" name="High RPM Shift Retard RPM Threshold - Base" category="Shift Related" storageaddress="0xC1FC" storagetype="float" endian="big" sizex="6" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Current Gear" sizex="6">
@@ -5063,34 +5408,6 @@
         <data>6</data>
       </table>
       <description>RPM drop below the base that clears timer 1. Its normal engine-event countdown still applies.</description>
-    </table>
-    <table type="3D" name="High RPM Shift Retard - RPM vs. Gear" category="Shift Related" storageaddress="0x25D70" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="6">
-      <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="RPM" sizex="14">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Current Gear" sizex="6">
-        <data>1</data>
-        <data>2</data>
-        <data>3</data>
-        <data>4</data>
-        <data>5</data>
-        <data>6</data>
-      </table>
-      <description>Limits shift retard by engine speed and gear.</description>
     </table>
     <table type="2D" name="High RPM Shift Retard Timer - 1" category="Shift Related" storageaddress="0xc22c" storagetype="uint8" endian="big" sizex="6" userlevel="1">
       <scaling units="engine events" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5130,6 +5447,62 @@
         <data>50.0</data>
       </table>
       <description>Temperature adjustment to the catalyst-temperature model as fuel enrichment changes.</description>
+    </table>
+    <table type="3D" name="DBW Throttle Knock" category="Throttle Control" storageaddress="0x360DC" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="33">
+      <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="RPM" sizex="15">
+        <data>500</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2250</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Requested Load" sizex="33">
+        <data>0</data>
+        <data>0.0625</data>
+        <data>0.125</data>
+        <data>0.1875</data>
+        <data>0.25</data>
+        <data>0.3125</data>
+        <data>0.375</data>
+        <data>0.4375</data>
+        <data>0.5</data>
+        <data>0.5625</data>
+        <data>0.625</data>
+        <data>0.6875</data>
+        <data>0.75</data>
+        <data>0.8125</data>
+        <data>0.875</data>
+        <data>0.9375</data>
+        <data>1</data>
+        <data>1.0625</data>
+        <data>1.125</data>
+        <data>1.1875</data>
+        <data>1.25</data>
+        <data>1.3125</data>
+        <data>1.375</data>
+        <data>1.4375</data>
+        <data>1.5</data>
+        <data>1.5625</data>
+        <data>1.625</data>
+        <data>1.6875</data>
+        <data>1.75</data>
+        <data>1.8125</data>
+        <data>1.875</data>
+        <data>1.9375</data>
+        <data>2</data>
+      </table>
+      <description>Throttle opening by engine speed and requested load for the knock strategy.</description>
     </table>
     <table type="3D" name="DBW Throttle Normal" category="Throttle Control" storageaddress="0x35920" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="33">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5242,62 +5615,6 @@
         <data>2</data>
       </table>
       <description>Throttle opening by engine speed and requested load for the overload strategy.</description>
-    </table>
-    <table type="3D" name="DBW Throttle Knock" category="Throttle Control" storageaddress="0x360DC" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="33">
-      <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="RPM" sizex="15">
-        <data>500</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2250</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Requested Load" sizex="33">
-        <data>0</data>
-        <data>0.0625</data>
-        <data>0.125</data>
-        <data>0.1875</data>
-        <data>0.25</data>
-        <data>0.3125</data>
-        <data>0.375</data>
-        <data>0.4375</data>
-        <data>0.5</data>
-        <data>0.5625</data>
-        <data>0.625</data>
-        <data>0.6875</data>
-        <data>0.75</data>
-        <data>0.8125</data>
-        <data>0.875</data>
-        <data>0.9375</data>
-        <data>1</data>
-        <data>1.0625</data>
-        <data>1.125</data>
-        <data>1.1875</data>
-        <data>1.25</data>
-        <data>1.3125</data>
-        <data>1.375</data>
-        <data>1.4375</data>
-        <data>1.5</data>
-        <data>1.5625</data>
-        <data>1.625</data>
-        <data>1.6875</data>
-        <data>1.75</data>
-        <data>1.8125</data>
-        <data>1.875</data>
-        <data>1.9375</data>
-        <data>2</data>
-      </table>
-      <description>Throttle opening by engine speed and requested load for the knock strategy.</description>
     </table>
     <table type="3D" name="Intake Cam Advance (VVT)" category="Valve Timing" storageaddress="0x24260" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="32">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
