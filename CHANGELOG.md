@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12 - 2026-10-19
+
+- Confirmed the nominal electrical end-of-injection reference before compression TDC; updated phase units and tuner help.
+- Added the injector-capacity load margin and verified its link to common load and boost control.
+- Added fuel-pressure controller, cold-limit hold/recovery, pressure-monitor, sensor-fault substitute and target-blending controls.
+- Added the separate after-start pressure target where present; preserved each stock selector.
+- Corrected the cold pressure-limit temperature label to stored intake-air temperature.
+- Passed native-code and RomRaider edit/save/checksum checks; approved after local manual review.
+
 ## 0.11 - 2026-10-18
 
 - Added verified stock injection-window limits and coolant/after-start phase corrections across all seven definitions.

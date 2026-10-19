@@ -12,7 +12,7 @@
       <memmodel>SH-2E family</memmodel>
       <filesize>1024kb</filesize>
       <author>mrphyslaw</author>
-      <version>0.3 timing and time units draft</version>
+      <version>0.4 fuel delivery draft</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL35H" />
@@ -1357,166 +1357,6 @@
       </table>
       <description>Sets the response period used to calculate fuel-feedback corrections by airflow.</description>
     </table>
-    <table type="2D" name="Fuel Pressure Max by ECT" category="Fueling" storageaddress="0x34a94" storagetype="uint8" endian="big" sizex="9" userlevel="1">
-      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Coolant Temperature (°F)" sizex="9">
-        <data>-40</data>
-        <data>-31</data>
-        <data>-22</data>
-        <data>-13</data>
-        <data>-4</data>
-        <data>5</data>
-        <data>14</data>
-        <data>23</data>
-        <data>32</data>
-      </table>
-      <description>Fuel pressure limit while temperature limiting is active.</description>
-    </table>
-    <table type="1D" name="Fuel Pressure Overall Max" category="Fueling" storageaddress="0x9e15" storagetype="uint8" endian="big" sizex="1" userlevel="1">
-      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Overall fuel pressure limit. An alternate temperature-based limit can also apply.</description>
-    </table>
-    <table type="3D" name="Fuel Pressure Target 1" category="Fueling" storageaddress="0x34c28" storagetype="uint8" endian="big" sizex="15" userlevel="1" sizey="24">
-      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>601.5625</data>
-        <data>800.78125</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizex="24">
-        <data>0</data>
-        <data>0.1</data>
-        <data>0.15</data>
-        <data>0.2</data>
-        <data>0.25</data>
-        <data>0.3</data>
-        <data>0.4</data>
-        <data>0.5</data>
-        <data>0.6</data>
-        <data>0.7</data>
-        <data>0.75</data>
-        <data>0.8</data>
-        <data>0.85</data>
-        <data>0.9</data>
-        <data>1</data>
-        <data>1.1</data>
-        <data>1.2</data>
-        <data>1.3</data>
-        <data>1.4</data>
-        <data>1.5</data>
-        <data>1.6</data>
-        <data>1.7</data>
-        <data>1.8</data>
-        <data>2</data>
-      </table>
-      <description>Desired fuel pressure by engine speed and load for this pressure-control mode.</description>
-    </table>
-    <table type="3D" name="Fuel Pressure Target 2" category="Fueling" storageaddress="0x34d9c" storagetype="uint8" endian="big" sizex="15" userlevel="1" sizey="24">
-      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>601.5625</data>
-        <data>800.78125</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizex="24">
-        <data>0</data>
-        <data>0.1</data>
-        <data>0.15</data>
-        <data>0.2</data>
-        <data>0.25</data>
-        <data>0.3</data>
-        <data>0.4</data>
-        <data>0.5</data>
-        <data>0.6</data>
-        <data>0.7</data>
-        <data>0.75</data>
-        <data>0.8</data>
-        <data>0.85</data>
-        <data>0.9</data>
-        <data>1</data>
-        <data>1.1</data>
-        <data>1.2</data>
-        <data>1.3</data>
-        <data>1.4</data>
-        <data>1.5</data>
-        <data>1.6</data>
-        <data>1.7</data>
-        <data>1.8</data>
-        <data>2</data>
-      </table>
-      <description>Desired fuel pressure for this pressure-control mode.</description>
-    </table>
-    <table type="3D" name="Fuel Pressure Target 3" category="Fueling" storageaddress="0x34f10" storagetype="uint8" endian="big" sizex="15" userlevel="1" sizey="24">
-      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
-        <data>601.5625</data>
-        <data>800.78125</data>
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizex="24">
-        <data>0</data>
-        <data>0.1</data>
-        <data>0.15</data>
-        <data>0.2</data>
-        <data>0.25</data>
-        <data>0.3</data>
-        <data>0.4</data>
-        <data>0.5</data>
-        <data>0.6</data>
-        <data>0.7</data>
-        <data>0.75</data>
-        <data>0.8</data>
-        <data>0.85</data>
-        <data>0.9</data>
-        <data>1</data>
-        <data>1.1</data>
-        <data>1.2</data>
-        <data>1.3</data>
-        <data>1.4</data>
-        <data>1.5</data>
-        <data>1.6</data>
-        <data>1.7</data>
-        <data>1.8</data>
-        <data>2</data>
-      </table>
-      <description>Desired fuel pressure by engine speed and load for the alternate pressure-control mode.</description>
-    </table>
     <table type="1D" name="Fuel Specific Gravity" category="Fueling" storageaddress="0x37548" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="kg/l (UI label)" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Fuel density used for fuel-volume calculations. Use a positive value.</description>
@@ -2181,8 +2021,310 @@
       </table>
       <description>Larger values remove warmup enrichment faster during enabled updates, down to zero.</description>
     </table>
+    <table type="2D" name="Fuel Pressure Cold Limit" category="Fueling / Fuel Pressure" storageaddress="0x34a94" storagetype="uint8" endian="big" sizex="9" userlevel="1">
+      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Stored Air Temperature (F)" sizex="9">
+        <data>-40</data>
+        <data>-31</data>
+        <data>-22</data>
+        <data>-13</data>
+        <data>-4</data>
+        <data>5</data>
+        <data>14</data>
+        <data>23</data>
+        <data>32</data>
+      </table>
+      <description>Pressure ceiling while the cold-start hold is active. Uses the colder stored intake-air temperature. The ceiling recovers toward the overall maximum after the hold ends.</description>
+    </table>
+    <table type="2D" name="Fuel Pressure Cold Limit Hold Time" category="Fueling / Fuel Pressure" storageaddress="0x34a9e" storagetype="uint16" endian="big" sizex="9" userlevel="1">
+      <scaling units="s" expression="x*0.025+(0)" to_byte="(x-(0))/0.025" format="0.0000" fineincrement="0.025" coarseincrement="0.25" />
+      <table type="Static X Axis" name="Stored Air Temperature (F)" sizex="9">
+        <data>-40</data>
+        <data>-31</data>
+        <data>-22</data>
+        <data>-13</data>
+        <data>-4</data>
+        <data>5</data>
+        <data>14</data>
+        <data>23</data>
+        <data>32</data>
+      </table>
+      <description>Time to retain the cold-start pressure limit after the start state ends. Uses the colder stored intake-air temperature.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Cold Limit Recovery Rate" category="Fueling / Fuel Pressure" storageaddress="0x37508" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi/s" expression="x*396.58756410604093+(0)" to_byte="(x-(0))/396.58756410604093" format="0.0000" fineincrement="396.58756410604093" coarseincrement="3965.875641060409" />
+      <description>Rate at which the cold-start pressure ceiling rises toward the overall maximum after the hold ends. Applied in 25 ms steps.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Overall Max" category="Fueling / Fuel Pressure" storageaddress="0x9e15" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Overall fuel pressure limit. An alternate temperature-based limit can also apply.</description>
+    </table>
+    <table type="3D" name="Fuel Pressure Target 1" category="Fueling / Fuel Pressure" storageaddress="0x34c28" storagetype="uint8" endian="big" sizex="15" userlevel="1" sizey="24">
+      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>601.5625</data>
+        <data>800.78125</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="24">
+        <data>0</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.4</data>
+        <data>0.5</data>
+        <data>0.6</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Alternate target used by the qualified hot-restart pressure state. Takes priority over the after-start and other alternate targets. The active pressure ceiling still applies.</description>
+    </table>
+    <table type="3D" name="Fuel Pressure Target 2" category="Fueling / Fuel Pressure" storageaddress="0x34d9c" storagetype="uint8" endian="big" sizex="15" userlevel="1" sizey="24">
+      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>601.5625</data>
+        <data>800.78125</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="24">
+        <data>0</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.4</data>
+        <data>0.5</data>
+        <data>0.6</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Alternate target for the enabled startup and temperature-difference states. Hot-restart and after-start targets take priority. The active pressure ceiling still applies.</description>
+    </table>
+    <table type="3D" name="Fuel Pressure Target 3" category="Fueling / Fuel Pressure" storageaddress="0x34f10" storagetype="uint8" endian="big" sizex="15" userlevel="1" sizey="24">
+      <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="15">
+        <data>601.5625</data>
+        <data>800.78125</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="24">
+        <data>0</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.4</data>
+        <data>0.5</data>
+        <data>0.6</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Normal pressure target after return from alternate pressure control. Temperature corrections, blending and the active pressure ceiling still apply.</description>
+    </table>
+    <table type="3D" name="Fuel Pressure Target 4 - After Start" category="Fueling / Fuel Pressure" storageaddress="0x42254" storagetype="uint8" endian="big" sizex="15" userlevel="1" sizey="24">
+      <scaling units="psi" expression="x*9.914689102651023+(-253.81604102786616)" to_byte="(x-(-253.81604102786616))/9.914689102651023" format="0.0000" fineincrement="9.914689102651023" coarseincrement="99.14689102651023" />
+      <table type="Static X Axis" name="RPM" sizex="15">
+        <data>601.599975586</data>
+        <data>800.799987793</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="24">
+        <data>0</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.4</data>
+        <data>0.5</data>
+        <data>0.6</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>Alternate pressure target during the qualified after-start hold. Hot-restart pressure takes priority. The active pressure ceiling still applies.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Target Blend Rate" category="Fueling / Fuel Pressure" storageaddress="0x37560" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="blend fraction/s" expression="x*40+(0)" to_byte="(x-(0))/40" format="0.00000" fineincrement="0.4" coarseincrement="4.0" />
+      <description>Rate of return from the alternate pressure target toward normal pressure control. Higher values blend faster. Applied in 25 ms steps.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Correction Maximum" category="Fueling / Fuel Pressure Control" storageaddress="0x37516" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="multiplier" expression="x*6.103515625e-05+(0)" to_byte="(x-(0))/6.103515625e-05" format="0.000000" fineincrement="6.103515625e-05" coarseincrement="0.0006103515625" />
+      <description>Upper limit on the combined proportional and accumulated fuel-pump correction.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Correction Minimum" category="Fueling / Fuel Pressure Control" storageaddress="0x37514" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="multiplier" expression="x*6.103515625e-05+(0)" to_byte="(x-(0))/6.103515625e-05" format="0.000000" fineincrement="6.103515625e-05" coarseincrement="0.0006103515625" />
+      <description>Lower limit on the combined proportional and accumulated fuel-pump correction.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Integral Correction Maximum" category="Fueling / Fuel Pressure Control" storageaddress="0x37524" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="multiplier" expression="x*3.0517578125e-05+(0)" to_byte="(x-(0))/3.0517578125e-05" format="0.000000" fineincrement="3.0517578125e-05" coarseincrement="0.00030517578125" />
+      <description>Highest allowed accumulated fuel-pump pressure correction.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Integral Correction Minimum" category="Fueling / Fuel Pressure Control" storageaddress="0x37526" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="multiplier" expression="x*3.0517578125e-05+(0)" to_byte="(x-(0))/3.0517578125e-05" format="0.000000" fineincrement="3.0517578125e-05" coarseincrement="0.00030517578125" />
+      <description>Lowest allowed accumulated fuel-pump pressure correction.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Integral Deadband - Lower" category="Fueling / Fuel Pressure Control" storageaddress="0x37532" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi error" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
+      <description>Lower pressure-error boundary for updating accumulated correction. The accumulator holds inside the deadband.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Integral Deadband - Upper" category="Fueling / Fuel Pressure Control" storageaddress="0x37530" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi error" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
+      <description>Upper pressure-error boundary for updating accumulated correction. Error is actual pressure minus target.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Integral Error Limit - Lower" category="Fueling / Fuel Pressure Control" storageaddress="0x3751c" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi error" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
+      <description>Lower error limit for updating accumulated correction. The accumulator holds at or below this limit.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Integral Error Limit - Upper" category="Fueling / Fuel Pressure Control" storageaddress="0x3751a" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi error" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
+      <description>Upper error limit for updating accumulated correction. The accumulator holds at or above this limit.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Integral Step" category="Fueling / Fuel Pressure Control" storageaddress="0x37505" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+      <scaling units="multiplier/control event" expression="x*3.0517578125e-05+(0)" to_byte="(x-(0))/3.0517578125e-05" format="0.000000" fineincrement="3.0517578125e-05" coarseincrement="0.00030517578125" />
+      <description>Amount added or removed from accumulated pressure correction per qualifying control event. Higher values change the correction faster.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Proportional Correction Maximum" category="Fueling / Fuel Pressure Control" storageaddress="0x37512" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="multiplier" expression="x*6.103515625e-05+(0)" to_byte="(x-(0))/6.103515625e-05" format="0.000000" fineincrement="6.103515625e-05" coarseincrement="0.0006103515625" />
+      <description>Highest allowed proportional fuel-pump correction.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Proportional Correction Minimum" category="Fueling / Fuel Pressure Control" storageaddress="0x37510" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="multiplier" expression="x*6.103515625e-05+(0)" to_byte="(x-(0))/6.103515625e-05" format="0.000000" fineincrement="6.103515625e-05" coarseincrement="0.0006103515625" />
+      <description>Lowest allowed proportional fuel-pump correction.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Proportional Deadband - Lower" category="Fueling / Fuel Pressure Control" storageaddress="0x3750e" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi error" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
+      <description>Lower pressure-error boundary for applying proportional correction. No proportional correction is applied inside the deadband.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Proportional Deadband - Upper" category="Fueling / Fuel Pressure Control" storageaddress="0x3750c" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi error" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
+      <description>Upper pressure-error boundary for applying proportional correction. Error is actual pressure minus target.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Proportional Gain" category="Fueling / Fuel Pressure Control" storageaddress="0x37518" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="multiplier/MPa" expression="x*0.000244140625+(0)" to_byte="(x-(0))/0.000244140625" format="0.000000" fineincrement="0.000244140625" coarseincrement="0.00244140625" />
+      <description>Immediate correction strength for rail-pressure error. Higher values respond more strongly.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure High Limit Monitor Delay" category="Fueling / Fuel Pressure Protection" storageaddress="0x37540" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="s" expression="x*0.025+(0)" to_byte="(x-(0))/0.025" format="0.0000" fineincrement="0.025" coarseincrement="0.25" />
+      <description>Time above the cold-limit monitor ceiling before the high-pressure performance test fails. Counts down in 25 ms steps while its qualifying conditions remain true.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure High Limit Monitor Margin" category="Fueling / Fuel Pressure Protection" storageaddress="0x37542" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi" expression="(((x-mod(x,4))/4-26)+abs((x-mod(x,4))/4-26))*4.957344551325511" to_byte="if(x&gt;0,((x/9.914689102651023+0.5)-mod((x/9.914689102651023+0.5),1)+26)*4+2,5)" format="0.0000" fineincrement="9.914689102651023" coarseincrement="99.14689102651023" />
+      <description>Effective pressure margin above the active cold-start pressure ceiling used by the high-pressure performance monitor.</description>
+    </table>
+    <table type="1D" name="Fuel Pressure Sensor Fault Substitute" category="Fueling / Fuel Pressure Protection" storageaddress="0x37538" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi" expression="x*2.4786722756627557+(-253.81604102786616)" to_byte="(x-(-253.81604102786616))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
+      <description>Substitute pressure used for injector calculations when the pressure sensor is unavailable. Pressure feedback correction is reset separately during a sensor fault.</description>
+    </table>
+    <table type="1D" name="Injector Capacity Load Margin" category="Fueling / Injection Limits" storageaddress="0x98c4" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="load %" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.00000" fineincrement="0.01" coarseincrement="0.1" />
+      <description>Load percentage points subtracted from the injection-capacity ceiling. Higher values reduce allowable load; this does not change injector pulsewidth.</description>
+    </table>
     <table type="2D" name="Injection Capacity End Phase Minimum" category="Fueling / Injection Timing" storageaddress="0x369ce" storagetype="uint16" endian="big" sizex="19" userlevel="1">
-      <scaling units="deg ECU phase" expression="x*0.02197265625+(0)" to_byte="(x-(0))/0.02197265625" format="0.0000" fineincrement="0.02197265625" coarseincrement="0.2197265625" />
+      <scaling units="deg BTDC" expression="x*0.02197265625+(0)" to_byte="(x-(0))/0.02197265625" format="0.0000" fineincrement="0.02197265625" coarseincrement="0.2197265625" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
         <data>601.5625</data>
@@ -2204,10 +2346,10 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>End boundary used to calculate available injection time and the fuel-capacity limit. It does not directly clamp the end-phase target. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+      <description>End boundary used to calculate available injection time and the fuel-capacity limit. It does not directly clamp the end-phase target. Measured before compression TDC; larger values are earlier.</description>
     </table>
     <table type="3D" name="Injection Phase - Base" category="Fueling / Injection Timing" storageaddress="0x41de0" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
-      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <scaling units="deg BTDC" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
         <data>600</data>
@@ -2261,10 +2403,10 @@
         <data>1.8</data>
         <data>2</data>
       </table>
-      <description>Target end of electrical injection by RPM and load, before blending and retard corrections. Larger values move the target earlier. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
+      <description>Electrical end-of-injection target before blending and retard corrections. Measured before compression TDC; larger values move injection earlier.</description>
     </table>
     <table type="3D" name="Injection Phase - Startup" category="Fueling / Injection Timing" storageaddress="0x35550" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
-      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <scaling units="deg BTDC" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
         <data>593.75</data>
@@ -2318,10 +2460,10 @@
         <data>1.8</data>
         <data>2</data>
       </table>
-      <description>End-of-injection target used by the timed startup states. Takes priority over the warm and blended maps. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
+      <description>Electrical end-of-injection target during the timed startup states. Takes priority over warm and blended targets. Larger values move injection earlier.</description>
     </table>
     <table type="3D" name="Injection Phase - Transition" category="Fueling / Injection Timing" storageaddress="0x359d0" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
-      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <scaling units="deg BTDC" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
         <data>593.75</data>
@@ -2375,10 +2517,10 @@
         <data>1.8</data>
         <data>2</data>
       </table>
-      <description>End-of-injection target reached as blend weight increases. Pulsewidth and the start-phase maximum can move the actual end later. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
+      <description>Electrical end-of-injection target approached as the blend weight rises. Pulsewidth and the start-phase maximum can move the actual end later.</description>
     </table>
     <table type="3D" name="Injection Phase - Warm" category="Fueling / Injection Timing" storageaddress="0x35e50" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
-      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <scaling units="deg BTDC" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
         <data>593.75</data>
@@ -2432,15 +2574,15 @@
         <data>1.8</data>
         <data>2</data>
       </table>
-      <description>End-of-injection target selected by the stored coolant warm-mode threshold. Startup timing takes priority. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
+      <description>Electrical end-of-injection target selected by the stored coolant warm-mode threshold. Startup timing takes priority. Larger values move injection earlier.</description>
     </table>
     <table type="1D" name="Injection Phase Blend Rate" category="Fueling / Injection Timing" storageaddress="0x36d84" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="blend fraction/s" expression="x*40+(0)" to_byte="(x-(0))/40" format="0.0000" fineincrement="0.0004" coarseincrement="0.004" />
       <description>Transition weight gained per second, in 25 ms steps. Higher values blend faster. A rate of 0.05 takes about 20 seconds to move from zero to full transition weight.</description>
     </table>
     <table type="1D" name="Injection Phase Fixed Value" category="Fueling / Injection Timing" storageaddress="0x36d74" storagetype="uint16" endian="big" sizex="1" userlevel="1">
-      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
-      <description>End-of-injection target used with the fixed override. Bypasses map selection and phase corrections. Pulsewidth and the start-phase maximum still apply. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
+      <scaling units="deg BTDC" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <description>Electrical end-of-injection target used with the fixed override. Bypasses map selection and phase corrections. Pulsewidth and the start-phase maximum still apply.</description>
     </table>
     <table type="Switch" name="Injection Phase Fixed Value Enable" category="Fueling / Injection Timing" storageaddress="0x36d78" storagetype="uint8" endian="big" sizex="1" userlevel="1">
       <state name="Use Maps" data="00" />
@@ -2449,8 +2591,8 @@
       <description>Enables the fixed injection phase value in place of the phase maps.</description>
     </table>
     <table type="1D" name="Injection Phase Minimum" category="Fueling / Injection Timing" storageaddress="0x37502" storagetype="uint8" endian="big" sizex="1" userlevel="1">
-      <scaling units="deg ECU phase" expression="x*6+(0)" to_byte="(x-(0))/6" format="0.0000" fineincrement="6" coarseincrement="60" />
-      <description>Minimum end-phase target before pulse duration is added. The start-phase maximum can still move the actual end later. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+      <scaling units="deg BTDC" expression="x*6+(0)" to_byte="(x-(0))/6" format="0.0000" fineincrement="6" coarseincrement="60" />
+      <description>Latest allowed electrical end-of-injection phase before compression TDC. Larger values keep injection farther before TDC.</description>
     </table>
     <table type="2D" name="Injection Phase Retard - After Start" category="Fueling / Injection Timing" storageaddress="0xd5dc" storagetype="uint16" endian="big" sizex="20" userlevel="1">
       <scaling units="deg retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
@@ -2605,7 +2747,7 @@
       <description>Stored coolant temperature that selects the warm phase map. Startup timing and the fixed-value override take priority.</description>
     </table>
     <table type="2D" name="Injection Start Phase Maximum" category="Fueling / Injection Timing" storageaddress="0x36972" storagetype="uint16" endian="big" sizex="19" userlevel="1">
-      <scaling units="deg ECU phase" expression="x*0.02197265625+(0)" to_byte="(x-(0))/0.02197265625" format="0.0000" fineincrement="0.02197265625" coarseincrement="0.2197265625" />
+      <scaling units="deg BTDC" expression="x*0.02197265625+(0)" to_byte="(x-(0))/0.02197265625" format="0.0000" fineincrement="0.02197265625" coarseincrement="0.2197265625" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
         <data>601.5625</data>
@@ -2627,7 +2769,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Earliest allowed injection start. A longer pulse moves injection end later once this limit is reached. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+      <description>Earliest allowed injection start. A longer pulse moves injection end later once this limit is reached. Measured before compression TDC; larger values are earlier.</description>
     </table>
     <table type="2D" name="Injector Base Pulsewidth - 1" category="Fueling / Injector Characterization" storageaddress="0x34a3a" storagetype="uint16" endian="big" sizex="17" userlevel="1">
       <scaling units="coefficient" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
