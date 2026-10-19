@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8 - 2026-10-18
+
+- Added the L39SED000 first-draft definition and checksum module.
+- Updated the portable launcher and build command for all seven definitions.
+- Passed native-code and RomRaider validation, followed by user manual review.
+
+Vehicle and flashing validation have not been performed.
+
 ## 0.7 - 2026-10-18
 
 - Added the L35HEH000 and L33XEH000 first-draft definitions and checksum modules.
