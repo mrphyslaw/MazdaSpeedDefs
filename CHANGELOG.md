@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.13 - 2026-10-19
+
+- Added pressure-target temperature correction and its RPM/load multiplier where supported.
+- Added the stock deceleration pressure target and verified its qualification and RPM hysteresis.
+- Added three pump base-phase banks, pressure-blending anchors and valve delay/peak/hold timing controls.
+- Corrected pressure-feedback scaling and help to additive fuel-demand units.
+- Preserved the earlier stock strategy, including voltage-only pump delay and peak-duration curves.
+- Pump phase uses native counts and fuel demand uses the ECU lookup index; absolute crank-angle and physical fuel-quantity units remain unconfirmed.
+- Passed native-code and RomRaider load/edit/save/checksum checks; approved for publication.
+
 ## 0.12 - 2026-10-19
 
 - Confirmed the nominal electrical end-of-injection reference before compression TDC; updated phase units and tuner help.

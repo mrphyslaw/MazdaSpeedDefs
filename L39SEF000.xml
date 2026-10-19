@@ -12,7 +12,7 @@
       <memmodel>SH-2E family</memmodel>
       <filesize>1024kb</filesize>
       <author>mrphyslaw</author>
-      <version>0.4 fuel delivery draft</version>
+      <version>0.5 pressure and pump draft</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL39SF" />
@@ -2247,25 +2247,118 @@
       </table>
       <description>Alternate pressure target during the qualified after-start hold. Hot-restart pressure takes priority. The active pressure ceiling still applies.</description>
     </table>
+    <table type="2D" name="Fuel Pressure Target - Deceleration" category="Fueling / Fuel Pressure" storageaddress="0x35966" storagetype="uint8" endian="big" sizex="16" userlevel="1">
+      <scaling units="psi" expression="x*9.914689102651023+(-253.81604102786616)" to_byte="(x-(-253.81604102786616))/9.914689102651023" format="0.0000" fineincrement="9.914689102651023" coarseincrement="99.14689102651023" />
+      <table type="Static X Axis" name="RPM" sizex="16">
+        <data>601.5625</data>
+        <data>800.78125</data>
+        <data>1000</data>
+        <data>1199.21875</data>
+        <data>1601.5625</data>
+        <data>2000</data>
+        <data>2398.4375</data>
+        <data>2800.78125</data>
+        <data>3199.21875</data>
+        <data>3601.5625</data>
+        <data>4000</data>
+        <data>4398.4375</data>
+        <data>4800.78125</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6800.78125</data>
+      </table>
+      <description>Pressure target during qualified deceleration. Selection follows the fuel-cut RPM and load conditions and returns to normal pressure control when qualification clears. The active pressure ceiling still applies.</description>
+    </table>
     <table type="1D" name="Fuel Pressure Target Blend Rate" category="Fueling / Fuel Pressure" storageaddress="0x37e1c" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="blend fraction/s" expression="x*40+(0)" to_byte="(x-(0))/40" format="0.00000" fineincrement="0.4" coarseincrement="4.0" />
       <description>Rate of return from the alternate pressure target toward normal pressure control. Higher values blend faster. Applied in 25 ms steps.</description>
     </table>
+    <table type="3D" name="Fuel Pressure Target Temperature Correction" category="Fueling / Fuel Pressure" storageaddress="0x4110c" storagetype="uint16" endian="big" sizex="13" userlevel="1" sizey="7">
+      <scaling units="psi correction" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
+      <table type="Static X Axis" name="Coolant Temperature (F)" sizex="13">
+        <data>-40</data>
+        <data>-22</data>
+        <data>-4</data>
+        <data>14</data>
+        <data>32</data>
+        <data>50</data>
+        <data>68</data>
+        <data>86</data>
+        <data>104</data>
+        <data>122</data>
+        <data>140</data>
+        <data>158</data>
+        <data>176</data>
+      </table>
+      <table type="Static Y Axis" name="Stored Coolant Temperature (F)" sizey="7">
+        <data>-22</data>
+        <data>-13</data>
+        <data>-4</data>
+        <data>5</data>
+        <data>14</data>
+        <data>23</data>
+        <data>32</data>
+      </table>
+      <description>Pressure added to the normal target by current and stored coolant temperature. Scaled by the temperature-correction multiplier before blending with alternate pressure control.</description>
+    </table>
+    <table type="3D" name="Fuel Pressure Target Temperature Correction Multiplier" category="Fueling / Fuel Pressure" storageaddress="0x411c4" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="20">
+      <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.00000" fineincrement="0.01" coarseincrement="0.1" />
+      <table type="Static X Axis" name="RPM" sizex="15">
+        <data>601.599975586</data>
+        <data>800.799987793</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="20">
+        <data>0</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.4</data>
+        <data>0.5</data>
+        <data>0.6</data>
+        <data>0.7</data>
+        <data>0.8</data>
+        <data>0.9</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+      </table>
+      <description>Scales the pressure temperature correction by RPM and load. Zero removes that correction; one applies it unchanged. The active pressure ceiling still applies.</description>
+    </table>
     <table type="1D" name="Fuel Pressure Correction Maximum" category="Fueling / Fuel Pressure Control" storageaddress="0x37dd2" storagetype="uint16" endian="big" sizex="1" userlevel="1">
-      <scaling units="multiplier" expression="x*6.103515625e-05+(0)" to_byte="(x-(0))/6.103515625e-05" format="0.000000" fineincrement="6.103515625e-05" coarseincrement="0.0006103515625" />
-      <description>Upper limit on the combined proportional and accumulated fuel-pump correction.</description>
+      <scaling units="fuel-demand units" expression="x*0.00390625+(-64)" to_byte="(x-(-64))/0.00390625" format="0.0000" fineincrement="0.00390625" coarseincrement="0.0390625" />
+      <description>Highest allowed combined pump fuel-demand correction. Zero is neutral; positive values increase the pump fuel-demand index.</description>
     </table>
     <table type="1D" name="Fuel Pressure Correction Minimum" category="Fueling / Fuel Pressure Control" storageaddress="0x37dd0" storagetype="uint16" endian="big" sizex="1" userlevel="1">
-      <scaling units="multiplier" expression="x*6.103515625e-05+(0)" to_byte="(x-(0))/6.103515625e-05" format="0.000000" fineincrement="6.103515625e-05" coarseincrement="0.0006103515625" />
-      <description>Lower limit on the combined proportional and accumulated fuel-pump correction.</description>
+      <scaling units="fuel-demand units" expression="x*0.00390625+(-64)" to_byte="(x-(-64))/0.00390625" format="0.0000" fineincrement="0.00390625" coarseincrement="0.0390625" />
+      <description>Lowest allowed combined pump fuel-demand correction. Zero is neutral; positive values increase the pump fuel-demand index.</description>
     </table>
     <table type="1D" name="Fuel Pressure Integral Correction Maximum" category="Fueling / Fuel Pressure Control" storageaddress="0x37de0" storagetype="uint16" endian="big" sizex="1" userlevel="1">
-      <scaling units="multiplier" expression="x*3.0517578125e-05+(0)" to_byte="(x-(0))/3.0517578125e-05" format="0.000000" fineincrement="3.0517578125e-05" coarseincrement="0.00030517578125" />
-      <description>Highest allowed accumulated fuel-pump pressure correction.</description>
+      <scaling units="fuel-demand units" expression="x*0.001953125+(-64)" to_byte="(x-(-64))/0.001953125" format="0.0000" fineincrement="0.001953125" coarseincrement="0.01953125" />
+      <description>Highest allowed accumulated pump fuel-demand correction. Zero is neutral; positive values increase the pump fuel-demand index.</description>
     </table>
     <table type="1D" name="Fuel Pressure Integral Correction Minimum" category="Fueling / Fuel Pressure Control" storageaddress="0x37de2" storagetype="uint16" endian="big" sizex="1" userlevel="1">
-      <scaling units="multiplier" expression="x*3.0517578125e-05+(0)" to_byte="(x-(0))/3.0517578125e-05" format="0.000000" fineincrement="3.0517578125e-05" coarseincrement="0.00030517578125" />
-      <description>Lowest allowed accumulated fuel-pump pressure correction.</description>
+      <scaling units="fuel-demand units" expression="x*0.001953125+(-64)" to_byte="(x-(-64))/0.001953125" format="0.0000" fineincrement="0.001953125" coarseincrement="0.01953125" />
+      <description>Lowest allowed accumulated pump fuel-demand correction. Zero is neutral; positive values increase the pump fuel-demand index.</description>
     </table>
     <table type="1D" name="Fuel Pressure Integral Deadband - Lower" category="Fueling / Fuel Pressure Control" storageaddress="0x37dee" storagetype="uint16" endian="big" sizex="1" userlevel="1">
       <scaling units="psi error" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
@@ -2284,16 +2377,16 @@
       <description>Upper error limit for updating accumulated correction. The accumulator holds at or above this limit.</description>
     </table>
     <table type="1D" name="Fuel Pressure Integral Step" category="Fueling / Fuel Pressure Control" storageaddress="0x37dc1" storagetype="uint8" endian="big" sizex="1" userlevel="1">
-      <scaling units="multiplier/control event" expression="x*3.0517578125e-05+(0)" to_byte="(x-(0))/3.0517578125e-05" format="0.000000" fineincrement="3.0517578125e-05" coarseincrement="0.00030517578125" />
-      <description>Amount added or removed from accumulated pressure correction per qualifying control event. Higher values change the correction faster.</description>
+      <scaling units="fuel-demand units/control event" expression="x*0.001953125+(0)" to_byte="(x-(0))/0.001953125" format="0.0000" fineincrement="0.001953125" coarseincrement="0.01953125" />
+      <description>Change in accumulated fuel-demand correction per qualifying control event. Higher values change the correction faster. The ECU applies half-count rounding.</description>
     </table>
     <table type="1D" name="Fuel Pressure Proportional Correction Maximum" category="Fueling / Fuel Pressure Control" storageaddress="0x37dce" storagetype="uint16" endian="big" sizex="1" userlevel="1">
-      <scaling units="multiplier" expression="x*6.103515625e-05+(0)" to_byte="(x-(0))/6.103515625e-05" format="0.000000" fineincrement="6.103515625e-05" coarseincrement="0.0006103515625" />
-      <description>Highest allowed proportional fuel-pump correction.</description>
+      <scaling units="fuel-demand units" expression="x*0.00390625+(-64)" to_byte="(x-(-64))/0.00390625" format="0.0000" fineincrement="0.00390625" coarseincrement="0.0390625" />
+      <description>Highest allowed proportional pump fuel-demand correction. Zero is neutral; positive values increase the pump fuel-demand index.</description>
     </table>
     <table type="1D" name="Fuel Pressure Proportional Correction Minimum" category="Fueling / Fuel Pressure Control" storageaddress="0x37dcc" storagetype="uint16" endian="big" sizex="1" userlevel="1">
-      <scaling units="multiplier" expression="x*6.103515625e-05+(0)" to_byte="(x-(0))/6.103515625e-05" format="0.000000" fineincrement="6.103515625e-05" coarseincrement="0.0006103515625" />
-      <description>Lowest allowed proportional fuel-pump correction.</description>
+      <scaling units="fuel-demand units" expression="x*0.00390625+(-64)" to_byte="(x-(-64))/0.00390625" format="0.0000" fineincrement="0.00390625" coarseincrement="0.0390625" />
+      <description>Lowest allowed proportional pump fuel-demand correction. Zero is neutral; positive values increase the pump fuel-demand index.</description>
     </table>
     <table type="1D" name="Fuel Pressure Proportional Deadband - Lower" category="Fueling / Fuel Pressure Control" storageaddress="0x37dca" storagetype="uint16" endian="big" sizex="1" userlevel="1">
       <scaling units="psi error" expression="x*2.4786722756627557+(-2538.160410278662)" to_byte="(x-(-2538.160410278662))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
@@ -2304,8 +2397,8 @@
       <description>Upper pressure-error boundary for applying proportional correction. Error is actual pressure minus target.</description>
     </table>
     <table type="1D" name="Fuel Pressure Proportional Gain" category="Fueling / Fuel Pressure Control" storageaddress="0x37dd4" storagetype="uint16" endian="big" sizex="1" userlevel="1">
-      <scaling units="multiplier/MPa" expression="x*0.000244140625+(0)" to_byte="(x-(0))/0.000244140625" format="0.000000" fineincrement="0.000244140625" coarseincrement="0.00244140625" />
-      <description>Immediate correction strength for rail-pressure error. Higher values respond more strongly.</description>
+      <scaling units="fuel-demand units/MPa" expression="x*0.015625+(0)" to_byte="(x-(0))/0.015625" format="0.0000" fineincrement="0.015625" coarseincrement="0.15625" />
+      <description>Immediate fuel-demand correction per MPa of pressure error. Higher values respond more strongly. Positive correction increases the pump fuel-demand index.</description>
     </table>
     <table type="1D" name="Fuel Pressure High Limit Monitor Delay" category="Fueling / Fuel Pressure Protection" storageaddress="0x37dfc" storagetype="uint16" endian="big" sizex="1" userlevel="1">
       <scaling units="s" expression="x*0.025+(0)" to_byte="(x-(0))/0.025" format="0.0000" fineincrement="0.025" coarseincrement="0.25" />
@@ -2318,6 +2411,199 @@
     <table type="1D" name="Fuel Pressure Sensor Fault Substitute" category="Fueling / Fuel Pressure Protection" storageaddress="0x37df4" storagetype="uint16" endian="big" sizex="1" userlevel="1">
       <scaling units="psi" expression="x*2.4786722756627557+(-253.81604102786616)" to_byte="(x-(-253.81604102786616))/2.4786722756627557" format="0.0000" fineincrement="2.4786722756627557" coarseincrement="24.786722756627558" />
       <description>Substitute pressure used for injector calculations when the pressure sensor is unavailable. Pressure feedback correction is reset separately during a sensor fault.</description>
+    </table>
+    <table type="3D" name="Fuel Pump Base Phase - 1 Low Pressure" category="Fueling / High Pressure Pump" storageaddress="0x37b88" storagetype="uint16" endian="big" sizex="15" userlevel="1" sizey="18">
+      <scaling units="pump phase counts" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="RPM" sizex="15">
+        <data>601.5625</data>
+        <data>800.78125</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Fuel Demand Index" sizey="18">
+        <data>-50</data>
+        <data>0</data>
+        <data>5</data>
+        <data>10</data>
+        <data>15</data>
+        <data>20</data>
+        <data>25</data>
+        <data>30</data>
+        <data>40</data>
+        <data>60</data>
+        <data>80</data>
+        <data>90</data>
+        <data>100</data>
+        <data>105</data>
+        <data>110</data>
+        <data>120</data>
+        <data>130</data>
+        <data>180</data>
+      </table>
+      <description>Base pump-valve phase by RPM and fuel-demand index. Blended with adjacent pressure banks. Delay compensation and the phase minimum apply afterward. Fuel-demand index uses the ECU lookup scale.</description>
+    </table>
+    <table type="3D" name="Fuel Pump Base Phase - 2 Reference Pressure" category="Fueling / High Pressure Pump" storageaddress="0x37738" storagetype="uint16" endian="big" sizex="15" userlevel="1" sizey="18">
+      <scaling units="pump phase counts" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="RPM" sizex="15">
+        <data>601.5625</data>
+        <data>800.78125</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Fuel Demand Index" sizey="18">
+        <data>-50</data>
+        <data>0</data>
+        <data>5</data>
+        <data>10</data>
+        <data>15</data>
+        <data>20</data>
+        <data>25</data>
+        <data>30</data>
+        <data>40</data>
+        <data>60</data>
+        <data>80</data>
+        <data>90</data>
+        <data>100</data>
+        <data>105</data>
+        <data>110</data>
+        <data>120</data>
+        <data>130</data>
+        <data>180</data>
+      </table>
+      <description>Base pump-valve phase by RPM and fuel-demand index. Blended with adjacent pressure banks. Delay compensation and the phase minimum apply afterward. Fuel-demand index uses the ECU lookup scale.</description>
+    </table>
+    <table type="3D" name="Fuel Pump Base Phase - 3 High Pressure" category="Fueling / High Pressure Pump" storageaddress="0x37960" storagetype="uint16" endian="big" sizex="15" userlevel="1" sizey="18">
+      <scaling units="pump phase counts" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="RPM" sizex="15">
+        <data>601.5625</data>
+        <data>800.78125</data>
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Fuel Demand Index" sizey="18">
+        <data>-50</data>
+        <data>0</data>
+        <data>5</data>
+        <data>10</data>
+        <data>15</data>
+        <data>20</data>
+        <data>25</data>
+        <data>30</data>
+        <data>40</data>
+        <data>60</data>
+        <data>80</data>
+        <data>90</data>
+        <data>100</data>
+        <data>105</data>
+        <data>110</data>
+        <data>120</data>
+        <data>130</data>
+        <data>180</data>
+      </table>
+      <description>Base pump-valve phase by RPM and fuel-demand index. Blended with adjacent pressure banks. Delay compensation and the phase minimum apply afterward. Fuel-demand index uses the ECU lookup scale.</description>
+    </table>
+    <table type="1D" name="Fuel Pump Pressure Anchor - 1 Low" category="Fueling / High Pressure Pump" storageaddress="0x37ddc" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi" expression="x*9.914689102651023+(-253.81604102786616)" to_byte="(x-(-253.81604102786616))/9.914689102651023" format="0.0000" fineincrement="9.914689102651023" coarseincrement="99.14689102651023" />
+      <description>Pressure used to blend the pump base-phase banks. Keep the low, reference and high anchors in increasing order.</description>
+    </table>
+    <table type="1D" name="Fuel Pump Pressure Anchor - 2 Reference" category="Fueling / High Pressure Pump" storageaddress="0x37dde" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi" expression="x*9.914689102651023+(-253.81604102786616)" to_byte="(x-(-253.81604102786616))/9.914689102651023" format="0.0000" fineincrement="9.914689102651023" coarseincrement="99.14689102651023" />
+      <description>Pressure used to blend the pump base-phase banks. Keep the low, reference and high anchors in increasing order.</description>
+    </table>
+    <table type="1D" name="Fuel Pump Pressure Anchor - 3 High" category="Fueling / High Pressure Pump" storageaddress="0x37dda" storagetype="uint16" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi" expression="x*9.914689102651023+(-253.81604102786616)" to_byte="(x-(-253.81604102786616))/9.914689102651023" format="0.0000" fineincrement="9.914689102651023" coarseincrement="99.14689102651023" />
+      <description>Pressure used to blend the pump base-phase banks. Keep the low, reference and high anchors in increasing order.</description>
+    </table>
+    <table type="3D" name="Fuel Pump Valve Delay Compensation" category="Fueling / High Pressure Pump" storageaddress="0x3536c" storagetype="uint16" endian="big" sizex="6" userlevel="1" sizey="2">
+      <scaling units="ms" expression="x*0.004+(0)" to_byte="(x-(0))/0.004" format="0.0000" fineincrement="0.004" coarseincrement="0.04" />
+      <table type="Static X Axis" name="Battery Voltage (V)" sizex="6">
+        <data>6</data>
+        <data>8</data>
+        <data>10</data>
+        <data>12</data>
+        <data>14</data>
+        <data>16</data>
+      </table>
+      <table type="Static Y Axis" name="RPM" sizey="2">
+        <data>2000</data>
+        <data>3000</data>
+      </table>
+      <description>Electrical delay allowed for the pump valve. Advances the electrical command and is added to the total energization limit.</description>
+    </table>
+    <table type="3D" name="Fuel Pump Valve Hold Duration Limit" category="Fueling / High Pressure Pump" storageaddress="0x353b4" storagetype="uint16" endian="big" sizex="12" userlevel="1" sizey="6">
+      <scaling units="ms" expression="x*0.004+(0)" to_byte="(x-(0))/0.004" format="0.0000" fineincrement="0.004" coarseincrement="0.04" />
+      <table type="Static X Axis" name="RPM" sizex="12">
+        <data>101.5625</data>
+        <data>250</data>
+        <data>500</data>
+        <data>750</data>
+        <data>1000</data>
+        <data>2000</data>
+        <data>3000</data>
+        <data>4000</data>
+        <data>5000</data>
+        <data>6000</data>
+        <data>7000</data>
+        <data>8000</data>
+      </table>
+      <table type="Static Y Axis" name="Battery Voltage (V)" sizey="6">
+        <data>6.005859375</data>
+        <data>7.9833984375</data>
+        <data>10.0341796875</data>
+        <data>12.01171875</data>
+        <data>13.9892578125</data>
+        <data>15.966796875</data>
+      </table>
+      <description>Hold-time allowance after valve delay compensation. The ECU adds delay compensation to set the total energization ceiling; available pump phase can shorten the pulse.</description>
+    </table>
+    <table type="3D" name="Fuel Pump Valve Peak Duration Limit" category="Fueling / High Pressure Pump" storageaddress="0x3545a" storagetype="uint16" endian="big" sizex="6" userlevel="1" sizey="2">
+      <scaling units="ms" expression="x*0.004+(0)" to_byte="(x-(0))/0.004" format="0.0000" fineincrement="0.004" coarseincrement="0.04" />
+      <table type="Static X Axis" name="Battery Voltage (V)" sizex="6">
+        <data>6</data>
+        <data>8</data>
+        <data>10</data>
+        <data>12</data>
+        <data>14</data>
+        <data>16</data>
+      </table>
+      <table type="Static Y Axis" name="RPM" sizey="2">
+        <data>2000</data>
+        <data>3000</data>
+      </table>
+      <description>Maximum initial energization time for the pump valve. Limited to the actual total pulse duration.</description>
     </table>
     <table type="1D" name="Injector Capacity Load Margin" category="Fueling / Injection Limits" storageaddress="0x98f4" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="load %" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.00000" fineincrement="0.01" coarseincrement="0.1" />
