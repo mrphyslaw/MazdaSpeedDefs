@@ -12,7 +12,7 @@
       <memmodel>SH-2E family</memmodel>
       <filesize>1024kb</filesize>
       <author>mrphyslaw</author>
-      <version>0.5 pressure and pump draft</version>
+      <version>0.6 power limits draft</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL33X" />
@@ -740,6 +740,14 @@
       <scaling units="Mode" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Selects load error or pressure error for boost control correction.</description>
     </table>
+    <table type="1D" name="BCS DC Accumulated Correction Limit - Decrease" category="Boost Control" storageaddress="0x37620" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0" fineincrement="0.1" coarseincrement="1" />
+      <description>Limits accumulated duty reduction. More negative values allow more reduction. Overall correction and final duty limits still apply.</description>
+    </table>
+    <table type="1D" name="BCS DC Accumulated Correction Limit - Increase" category="Boost Control" storageaddress="0x37624" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0" fineincrement="0.1" coarseincrement="1" />
+      <description>Limits accumulated duty increase. Raising this value allows more accumulated positive correction. Overall correction and final duty limits still apply.</description>
+    </table>
     <table type="2D" name="BCS DC Adjustment - Boost Limit Exceeded" category="Boost Control" storageaddress="0x376e8" storagetype="float" endian="big" sizex="6" userlevel="1">
       <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Overboost Amount (psi)" sizex="6">
@@ -814,11 +822,11 @@
     </table>
     <table type="1D" name="BCS DC Adjustment Limit - Decrease" category="Boost Control" storageaddress="0x37618" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Maximum allowed downward BCS duty correction from its base value.</description>
+      <description>Lower limit on the initial plus accumulated duty correction. The accumulated correction also has its own limit; final duty remains within 0 to 100 percent.</description>
     </table>
     <table type="1D" name="BCS DC Adjustment Limit - Increase" category="Boost Control" storageaddress="0x3761c" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Maximum allowed upward BCS duty correction from its base value.</description>
+      <description>Upper limit on the initial plus accumulated duty correction. The accumulated correction also has its own limit; final duty remains within 0 to 100 percent.</description>
     </table>
     <table type="3D" name="BCS DC Base" category="Boost Control" storageaddress="0x37bbc" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
       <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -896,11 +904,7 @@
       </table>
       <description>Scales the pressure limit for engine speed and barometric pressure.</description>
     </table>
-    <table type="1D" name="Overboost Pressure Limit Hysteresis" category="Boost Control / Overboost Limit" storageaddress="0x37630" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="psi" expression="x*0.14503773773020923+(0)" to_byte="(x-(0))/0.14503773773020923" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Pressure must fall this far below the limit before overboost correction clears.</description>
-    </table>
-    <table type="2D" name="Overboost Protection Throttle Reduction" category="Boost Control / Overboost Limit" storageaddress="0x377cc" storagetype="float" endian="big" sizex="14" userlevel="1">
+    <table type="2D" name="Overboost Pressure Limit - Base" category="Boost Control / Overboost Limit" storageaddress="0x377cc" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="psi absolute" expression="x*0.14503773773020923+(0)" to_byte="(x-(0))/0.14503773773020923" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="RPM" sizex="14">
         <data>1000</data>
@@ -918,7 +922,11 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Pressure limit used to start overboost correction.</description>
+      <description>Base pressure limit for overboost correction. Barometric adjustment scales the limit; hysteresis controls when correction clears.</description>
+    </table>
+    <table type="1D" name="Overboost Pressure Limit Hysteresis" category="Boost Control / Overboost Limit" storageaddress="0x37630" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="psi" expression="x*0.14503773773020923+(0)" to_byte="(x-(0))/0.14503773773020923" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Pressure must fall this far below the limit before overboost correction clears.</description>
     </table>
     <table type="3D" name="Load Targets (Alternate Mode)" category="Boost Control / Targets" storageaddress="0x383b4" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -2606,8 +2614,8 @@
       <description>Maximum initial energization time for the pump valve. Limited to the actual total pulse duration.</description>
     </table>
     <table type="1D" name="Injector Capacity Load Margin" category="Fueling / Injection Limits" storageaddress="0x98c4" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="load %" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.00000" fineincrement="0.01" coarseincrement="0.1" />
-      <description>Load percentage points subtracted from the injection-capacity ceiling. Higher values reduce allowable load; this does not change injector pulsewidth.</description>
+      <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.00000" fineincrement="0.01" coarseincrement="0.1" />
+      <description>Load subtracted from the injection-capacity ceiling. A value of 0.1 reduces the ceiling by 0.1 load. Higher values reduce allowable load; injector pulsewidth is unchanged.</description>
     </table>
     <table type="2D" name="Injection Capacity End Phase Minimum" category="Fueling / Injection Timing" storageaddress="0x369ca" storagetype="uint16" endian="big" sizex="19" userlevel="1">
       <scaling units="deg BTDC" expression="x*0.02197265625+(0)" to_byte="(x-(0))/0.02197265625" format="0.0000" fineincrement="0.02197265625" coarseincrement="0.2197265625" />
@@ -5051,7 +5059,7 @@
     </table>
     <table type="1D" name="Requested Load Limit Overall" category="Load Targeting" storageaddress="0x9ab0" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Shared requested-load ceiling used by this ROM's stock manual-transmission configuration. Other limits and multipliers still apply.</description>
+      <description>Shared load ceiling for the stock manual-transmission strategy. Gear and barometric limits, density and acceleration corrections, and injector capacity can reduce the final target further.</description>
     </table>
     <table type="2D" name="Requested Load Limit RPM" category="Load Targeting" storageaddress="0x3ace4" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -6042,7 +6050,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <table type="Static Y Axis" name="Requested Load" sizex="33">
+      <table type="Static Y Axis" name="Corrected Load" sizex="33">
         <data>0</data>
         <data>0.0625</data>
         <data>0.125</data>
@@ -6077,7 +6085,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Throttle opening by engine speed and requested load for the knock strategy.</description>
+      <description>Throttle opening by RPM and corrected load for the knock-related strategy. Air-density and intake-temperature corrections shift the load lookup. Later limits and overrides still apply.</description>
     </table>
     <table type="3D" name="DBW Throttle Normal" category="Throttle Control" storageaddress="0x3c77c" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="33">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -6098,7 +6106,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <table type="Static Y Axis" name="Requested Load" sizex="33">
+      <table type="Static Y Axis" name="Corrected Load" sizex="33">
         <data>0</data>
         <data>0.0625</data>
         <data>0.125</data>
@@ -6133,7 +6141,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Throttle opening by engine speed and requested load for the normal strategy.</description>
+      <description>Throttle opening by RPM and corrected load for the normal strategy. Air-density and intake-temperature corrections shift the load lookup. Later limits and overrides still apply.</description>
     </table>
     <table type="3D" name="DBW Throttle Overload" category="Throttle Control" storageaddress="0x3bfc0" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="33">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -6154,7 +6162,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <table type="Static Y Axis" name="Requested Load" sizex="33">
+      <table type="Static Y Axis" name="Corrected Load" sizex="33">
         <data>0</data>
         <data>0.0625</data>
         <data>0.125</data>
@@ -6189,7 +6197,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Throttle opening by engine speed and requested load for the overload strategy.</description>
+      <description>Throttle opening by RPM and corrected load for the overload strategy. Air-density and intake-temperature corrections shift the load lookup. Later limits and overrides still apply.</description>
     </table>
     <table type="3D" name="Intake Cam Advance (VVT)" category="Valve Timing" storageaddress="0x24ba4" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="32">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14 - 2026-10-19
+
+- Added separate accumulated wastegate duty-correction limits across all seven definitions.
+- Clarified the existing combined wastegate correction limits and final duty range.
+- Corrected the injector-capacity margin unit label to load; numeric scaling is unchanged.
+- Clarified overall requested-load arbitration and the corrected-load input to the three throttle maps.
+- Renamed the base overboost pressure threshold to match its verified function.
+- Passed native-code and RomRaider load/edit/save/checksum checks; approved for publication.
+
 ## 0.13 - 2026-10-19
 
 - Added pressure-target temperature correction and its RPM/load multiplier where supported.
