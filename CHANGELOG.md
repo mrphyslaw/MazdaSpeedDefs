@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.15 - 2026-10-19
+
+- Documented verified stock lookup ranges and edge-holding behavior in tuner help.
+- Clarified fuel, ignition, load and throttle bank priorities and blending.
+- Renamed temperature-retard banks to Normal Mode and Abnormal Mode to match ignition selection.
+- Clarified VVT target weighting and state/high-RPM overrides.
+- Distinguished additive duty points from percentages of base duty; clarified error-axis signs and selector values.
+- Preserved numeric conversions and breakpoints; gave boost-mode selectors integer editing increments.
+- Passed native-code and RomRaider display/edit/save/checksum checks; approved for publication.
+
 ## 0.14 - 2026-10-19
 
 - Added separate accumulated wastegate duty-correction limits across all seven definitions.

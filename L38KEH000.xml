@@ -12,7 +12,7 @@
       <memmodel>SH-2E family</memmodel>
       <filesize>1024kb</filesize>
       <author>MazdaDefinitionLab</author>
-      <version>0.6 power limits draft</version>
+      <version>0.7 operating range and clarity</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL38K" />
@@ -680,7 +680,7 @@
         <data>14.71</data>
         <data>15.86</data>
       </table>
-      <description>Barometric-pressure multiplier applied after the gear-specific pedal map.</description>
+      <description>Barometric-pressure multiplier applied after the gear-specific pedal map. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="APP Multiplier Speed Adjustment" category="Accelerator Pedal Calibration" storageaddress="0x33E1C" storagetype="float" endian="big" sizex="10" userlevel="1">
       <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -696,7 +696,7 @@
         <data>9.365</data>
         <data>10.536</data>
       </table>
-      <description>Vehicle-speed multiplier applied after the gear-specific pedal map.</description>
+      <description>Vehicle-speed multiplier applied after the gear-specific pedal map. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Load Estimate Hold - Activation Load" category="Boost and Load" storageaddress="0x9D58" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -721,8 +721,8 @@
     <table type="Switch" name="BCS Correction Mode" category="Boost Control" storageaddress="0x3091A" storagetype="uint8" endian="big" sizex="1" userlevel="1">
       <state name="Load error" data="00" />
       <state name="Pressure error" data="01" />
-      <scaling units="Mode" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Selects load error or pressure error for boost control correction.</description>
+      <scaling units="Mode" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="1" />
+      <description>0 selects load-error correction, with overboost correction when its pressure limit is exceeded. Any nonzero value selects pressure-error correction. This selection does not enable the separate alternate targeting strategy.</description>
     </table>
     <table type="1D" name="BCS DC Accumulated Correction Limit - Decrease" category="Boost Control" storageaddress="0x30940" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0" fineincrement="0.1" coarseincrement="1" />
@@ -733,8 +733,8 @@
       <description>Limits accumulated duty increase. Raising this value allows more accumulated positive correction. Overall correction and final duty limits still apply.</description>
     </table>
     <table type="2D" name="BCS DC Adjustment - Boost Limit Exceeded" category="Boost Control" storageaddress="0x30A08" storagetype="float" endian="big" sizex="6" userlevel="1">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Overboost Amount (psi)" sizex="6">
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Pressure Above Overboost Limit (psi)" sizex="6">
         <data>0</data>
         <data>0.145</data>
         <data>0.4351</data>
@@ -742,11 +742,11 @@
         <data>1.015</data>
         <data>1.305</data>
       </table>
-      <description>Adds to the accumulated boost solenoid duty correction when the pressure limit is exceeded.</description>
+      <description>Added to accumulated duty correction each update while overboost is latched in load-error mode. Positive values add duty; negative values subtract duty. Correction limits apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="BCS DC Adjustment Barometer" category="Boost Control" storageaddress="0x30A98" storagetype="float" endian="big" sizex="8" userlevel="1">
-      <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Barometric Pressure (psi)" sizex="8">
+      <scaling units="% of base" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Barometric Pressure (psi absolute)" sizex="8">
         <data>7.822</data>
         <data>8.971</data>
         <data>10.12</data>
@@ -756,10 +756,10 @@
         <data>14.71</data>
         <data>15.86</data>
       </table>
-      <description>Multiplies base boost solenoid duty by this percentage as barometric pressure changes.</description>
+      <description>Scales base duty with barometric pressure. 100% leaves base duty unchanged; lower values reduce it and higher values increase it. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="BCS DC Adjustment Battery Voltage" category="Boost Control" storageaddress="0x30AB8" storagetype="float" endian="big" sizex="9" userlevel="1">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Battery Volts (V)" sizex="9">
         <data>6.5</data>
         <data>7.75</data>
@@ -771,11 +771,11 @@
         <data>15.25</data>
         <data>16.5</data>
       </table>
-      <description>Adds boost solenoid duty to compensate for battery voltage.</description>
+      <description>Adds duty points for battery-voltage compensation. Positive values increase commanded duty; negative values reduce it. Final duty limits apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="BCS DC Adjustment Boost Target Correction (Boost Targeting Mode)" category="Boost Control" storageaddress="0x309DC" storagetype="float" endian="big" sizex="11" userlevel="1">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Boost Target Deviation (psi)" sizex="11">
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Actual Pressure - Target Pressure (psi)" sizex="11">
         <data>-1.305</data>
         <data>-1.015</data>
         <data>-0.7252</data>
@@ -788,10 +788,10 @@
         <data>1.015</data>
         <data>1.305</data>
       </table>
-      <description>Boost-duty correction from pressure error. Requires pressure-error mode; that mode is disabled in this ROM's stock configuration.</description>
+      <description>Accumulated duty-point correction from actual pressure minus target pressure. Used when BCS Correction Mode is nonzero. Positive values add duty; negative values subtract duty. Correction and final-duty limits apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="BCS DC Adjustment IAT" category="Boost Control" storageaddress="0x30A78" storagetype="float" endian="big" sizex="8" userlevel="1">
-      <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="% of base" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Intake Air Temperature (degF)" sizex="8">
         <data>-40</data>
         <data>-4</data>
@@ -802,18 +802,18 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Multiplies base boost solenoid duty by this percentage as intake air temperature changes.</description>
+      <description>Scales base duty with intake air temperature. 100% leaves base duty unchanged; lower values reduce it and higher values increase it. Uses nearest edge outside axes.</description>
     </table>
     <table type="1D" name="BCS DC Adjustment Limit - Decrease" category="Boost Control" storageaddress="0x30938" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Lower limit on the initial plus accumulated duty correction. The accumulated correction also has its own limit; final duty remains within 0 to 100 percent.</description>
     </table>
     <table type="1D" name="BCS DC Adjustment Limit - Increase" category="Boost Control" storageaddress="0x3093c" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Upper limit on the initial plus accumulated duty correction. The accumulated correction also has its own limit; final duty remains within 0 to 100 percent.</description>
     </table>
     <table type="3D" name="BCS DC Base" category="Boost Control" storageaddress="0x30F4C" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="duty %" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="RPM" sizex="15">
         <data>500</data>
         <data>1000</data>
@@ -850,13 +850,13 @@
         <data>93.75</data>
         <data>100</data>
       </table>
-      <description>Base boost solenoid duty by engine speed and selected throttle input.</description>
+      <description>Base wastegate solenoid duty by RPM and selected throttle input. Higher values increase commanded duty before multipliers, corrections and limits. Uses nearest edge outside axes.</description>
     </table>
     <table type="Switch" name="BCS Throttle Input" category="Boost Control" storageaddress="0x30919" storagetype="uint8" endian="big" sizex="1" userlevel="1">
       <state name="Measured TPS" data="00" />
       <state name="Target TPS" data="01" />
-      <scaling units="Selection" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Selects measured or target throttle position for the boost-control tables.</description>
+      <scaling units="Selection" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="1" />
+      <description>0 uses measured throttle position for the wastegate lookup. Any nonzero value uses the throttle target from the active normal or alternate strategy. The selected input is limited by the lookup axis.</description>
     </table>
     <table type="3D" name="Boost Limit Barometer Adjustment" category="Boost Control / Overboost Limit" storageaddress="0x30D8C" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="8">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1066,7 +1066,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Closed-loop fuel targets indexed by load and engine speed.</description>
+      <description>Closed-loop lambda target contributing to the final fuel target. Lower values request richer fueling; enrichment and blending still apply. Above 5000 RPM, this lookup holds its last column. Load outside the axis uses the nearest row.</description>
     </table>
     <table type="3D" name="Clutch Press Timer" category="Fueling" storageaddress="0x17F8C" storagetype="uint8" endian="big" sizex="14" userlevel="1" sizey="6">
       <scaling units="s" expression="x*0.005+(0)" to_byte="(x-(0))/0.005" format="0.0000" fineincrement="0.005" coarseincrement="0.025" />
@@ -1115,7 +1115,7 @@
         <data>194</data>
         <data>212</data>
       </table>
-      <description>Cold-start enrichment amount. The higher cold-start or warmup state is used, then fades with its decrement.</description>
+      <description>Cold-start enrichment amount. The higher cold-start or warmup state is used, then fades with its decrement. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Cold Cranking and Afterstart Enrichment Decrement" category="Fueling" storageaddress="0xA76C" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Enrichment" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1136,7 +1136,7 @@
         <data>194</data>
         <data>212</data>
       </table>
-      <description>Larger values remove cold-start enrichment faster during enabled updates, down to zero.</description>
+      <description>Larger values remove cold-start enrichment faster during enabled updates, down to zero. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Conditional Fuel Correction - Coolant Factor" category="Fueling" storageaddress="0xC804" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="factor" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1150,7 +1150,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Scales conditional fuel correction by coolant temperature. Zero disables this correction.</description>
+      <description>Scales conditional fuel correction by coolant temperature. Zero disables this correction. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Conditional Fuel Correction - RPM Factor" category="Fueling" storageaddress="0xC824" storagetype="float" endian="big" sizex="7" userlevel="1">
       <scaling units="factor" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1163,7 +1163,7 @@
         <data>1750</data>
         <data>2000</data>
       </table>
-      <description>Scales conditional fuel correction by engine speed. Zero disables this correction.</description>
+      <description>Scales conditional fuel correction by engine speed. Zero disables this correction. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Conditional Fuel Correction - Signal Ratio Factor" category="Fueling" storageaddress="0xC840" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="factor" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1184,7 +1184,7 @@
         <data>1.083299994468689</data>
         <data>1.166700005531311</data>
       </table>
-      <description>Scales conditional fuel correction by signal ratio. Zero disables this correction.</description>
+      <description>Scales conditional fuel correction by signal ratio. Zero disables this correction. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Decel Fuel Cut Requested Load Threshold" category="Fueling" storageaddress="0xA2A4" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="Load Threshold" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1204,7 +1204,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Base load thresholds used to decide when deceleration fuel cut ends and normal injection resumes.</description>
+      <description>Base load thresholds used to decide when deceleration fuel cut ends and normal injection resumes. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Decel Fuel Cut Requested Load Threshold Additive" category="Fueling" storageaddress="0xd20c" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="Load Threshold Additive" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1224,7 +1224,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Added to the base load threshold when selecting deceleration fuel pressure.</description>
+      <description>Added to the base load threshold when selecting deceleration fuel pressure. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Decel RPM Offset - Base" category="Fueling" storageaddress="0xA24C" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1238,7 +1238,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>RPM above idle used for deceleration thresholds when no alternate setting applies.</description>
+      <description>RPM above idle used for deceleration thresholds when no alternate setting applies. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Decel RPM Offset - Supplemental" category="Fueling" storageaddress="0xA22C" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1252,7 +1252,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Additional RPM above idle used as a floor for deceleration thresholds when enabled.</description>
+      <description>Additional RPM above idle used as a floor for deceleration thresholds when enabled. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Enrichment Multiplier - Cold Start and Warmup" category="Fueling" storageaddress="0xA7E4" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1266,7 +1266,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Scales cold-start and warmup enrichment when its conditional mode is active. A value of 1 leaves it unchanged.</description>
+      <description>Scales cold-start and warmup enrichment when its conditional mode is active. A value of 1 leaves it unchanged. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Enrichment Multiplier - Supplemental" category="Fueling" storageaddress="0xA8EC" storagetype="float" endian="big" sizex="7" userlevel="1">
       <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1279,7 +1279,7 @@
         <data>140</data>
         <data>176</data>
       </table>
-      <description>Scales supplemental enrichment in its conditional mode. Values above 1 increase the request before other offsets and limits.</description>
+      <description>Scales supplemental enrichment in its conditional mode. Values above 1 increase the request before other offsets and limits. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Fuel Feedback Gain" category="Fueling" storageaddress="0xCE40" storagetype="float" endian="big" sizex="28" userlevel="1">
       <scaling units="Ratio" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1313,7 +1313,7 @@
         <data>250.8800048828125</data>
         <data>271.3599853515625</data>
       </table>
-      <description>Sets the strength of fuel feedback by airflow.</description>
+      <description>Sets the strength of fuel feedback by airflow. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Fuel Feedback Response Period" category="Fueling" storageaddress="0xCDD0" storagetype="float" endian="big" sizex="28" userlevel="1">
       <scaling units="s" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1347,7 +1347,7 @@
         <data>250.8800048828125</data>
         <data>271.3599853515625</data>
       </table>
-      <description>Sets the response period used to calculate fuel-feedback corrections by airflow.</description>
+      <description>Sets the response period used to calculate fuel-feedback corrections by airflow. Uses nearest edge outside axes.</description>
     </table>
     <table type="1D" name="Fuel Specific Gravity" category="Fueling" storageaddress="0x30868" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="kg/l (UI label)" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1365,7 +1365,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Load-drop fuel correction in percentage points. Stock speed and weighting limits prevent this table from adding correction.</description>
+      <description>Load-drop fuel correction in percentage points. Stock speed and weighting limits prevent this table from adding correction. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Load Change Fuel Correction - Rise Offset" category="Fueling" storageaddress="0xA908" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1379,7 +1379,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Adds percentage points to load-rise fuel correction when enabled. Stock values add no offset.</description>
+      <description>Adds percentage points to load-rise fuel correction when enabled. Stock values add no offset. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="LTFT Adjustment ECT" category="Fueling" storageaddress="0xd0c8" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1400,7 +1400,7 @@
         <data>90</data>
         <data>100</data>
       </table>
-      <description>Coolant-temperature multiplier for negative long-term fuel trims. Positive trims bypass this correction.</description>
+      <description>Coolant-temperature multiplier for negative long-term fuel trims. Positive trims bypass this correction. Uses nearest edge outside axes.</description>
     </table>
     <table type="1D" name="LTFT Partition 1" category="Fueling" storageaddress="0x84bc" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="lb/min" expression="x*0.13227735731092655+(0)" to_byte="(x-(0))/0.13227735731092655" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1475,7 +1475,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Desired part-throttle open-loop mixture by engine speed and load for the knock-related strategy.</description>
+      <description>Knock-related-mode open-loop lambda target by RPM and load. Overload takes priority over knock-related mode. Used when the WOT curve is not selected. Lower values command richer fueling. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Open Loop Part Throttle AFR Target Normal" category="Fueling" storageaddress="0x26530" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="29">
       <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1526,7 +1526,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Desired part-throttle open-loop mixture by engine speed and load under normal conditions.</description>
+      <description>Normal-mode open-loop lambda target by RPM and load. Overload takes priority over knock-related mode. Used when the WOT curve is not selected. Lower values command richer fueling. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Open Loop Part Throttle AFR Target Overload" category="Fueling" storageaddress="0x271e0" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="29">
       <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1577,7 +1577,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Desired part-throttle open-loop mixture by engine speed and load during overload.</description>
+      <description>Overload-mode open-loop lambda target by RPM and load. Overload takes priority over knock-related mode. Used when the WOT curve is not selected. Lower values command richer fueling. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Open Loop WOT AFR Target Knock Present" category="Fueling" storageaddress="0xD508" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1597,7 +1597,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Desired wide-open-throttle mixture by engine speed for the knock-related strategy.</description>
+      <description>Knock-related-mode RPM-only lambda target when WOT state is active and its inhibit is clear. Overload takes priority over knock-related mode. Lower values command richer fueling. RPM outside the axis uses the nearest endpoint.</description>
     </table>
     <table type="2D" name="Open Loop WOT AFR Target Normal" category="Fueling" storageaddress="0xd4d0" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1617,7 +1617,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Desired wide-open-throttle mixture by engine speed under normal conditions.</description>
+      <description>Normal-mode RPM-only lambda target when WOT state is active and its inhibit is clear. Overload takes priority over knock-related mode. Lower values command richer fueling. RPM outside the axis uses the nearest endpoint.</description>
     </table>
     <table type="2D" name="Open Loop WOT AFR Target Overload" category="Fueling" storageaddress="0xd540" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="lambda" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1637,7 +1637,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Desired wide-open-throttle mixture by engine speed during overload.</description>
+      <description>Overload-mode RPM-only lambda target when WOT state is active and its inhibit is clear. Overload takes priority over knock-related mode. Lower values command richer fueling. RPM outside the axis uses the nearest endpoint.</description>
     </table>
     <table type="3D" name="Supplemental Fuel Enrichment - Additional" category="Fueling" storageaddress="0x43104" storagetype="float" endian="big" sizex="7" userlevel="1" sizey="5">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1657,7 +1657,7 @@
         <data>68</data>
         <data>104</data>
       </table>
-      <description>Extra fuel enrichment added before the enrichment limit.</description>
+      <description>Extra fuel enrichment added before the enrichment limit. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Supplemental Fuel Enrichment - Additional Multiplier 1" category="Fueling" storageaddress="0x42454" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="29">
       <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1708,7 +1708,7 @@
         <data>1.9375</data>
         <data>2.0</data>
       </table>
-      <description>Scales additional fuel enrichment by RPM and load when mode 1 is selected.</description>
+      <description>Scales additional fuel enrichment by RPM and load when mode 1 is selected. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Supplemental Fuel Enrichment - Additional Multiplier 2" category="Fueling" storageaddress="0x42AAC" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="29">
       <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1759,7 +1759,7 @@
         <data>1.9375</data>
         <data>2.0</data>
       </table>
-      <description>Scales additional fuel enrichment by RPM and load when mode 2 is selected.</description>
+      <description>Scales additional fuel enrichment by RPM and load when mode 2 is selected. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Supplemental Fuel Enrichment - Base" category="Fueling" storageaddress="0x1AEC4" storagetype="float" endian="big" sizex="7" userlevel="1" sizey="5">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1779,7 +1779,7 @@
         <data>68</data>
         <data>104</data>
       </table>
-      <description>Base supplemental fuel enrichment before the load multiplier and enrichment limit.</description>
+      <description>Base supplemental fuel enrichment before the load multiplier and enrichment limit. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Supplemental Fuel Enrichment - Limit" category="Fueling" storageaddress="0x1B110" storagetype="float" endian="big" sizex="7" userlevel="1" sizey="5">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1799,7 +1799,7 @@
         <data>68</data>
         <data>104</data>
       </table>
-      <description>Limits combined supplemental fuel enrichment before the mode multiplier and other corrections.</description>
+      <description>Limits combined supplemental fuel enrichment before the mode multiplier and other corrections. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Supplemental Fuel Enrichment - Load Multiplier 1" category="Fueling" storageaddress="0xA804" storagetype="float" endian="big" sizex="29" userlevel="1">
       <scaling units="multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1883,7 +1883,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Fuel correction loaded after a qualifying mode change while the hold counter is active.</description>
+      <description>Fuel correction loaded after a qualifying mode change while the hold counter is active. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Timed Fuel Correction - Decay" category="Fueling" storageaddress="0xA9BC" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="%/engine event" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
@@ -1897,7 +1897,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Correction removed at each 180-degree crank event after the hold expires. Elapsed time varies with RPM; this is not a fixed-time decay rate.</description>
+      <description>Correction removed at each 180-degree crank event after the hold expires. Elapsed time varies with RPM; this is not a fixed-time decay rate. Uses nearest edge outside axes.</description>
     </table>
     <table type="1D" name="Timed Fuel Correction - Hold Time" category="Fueling" storageaddress="0x899C" storagetype="uint8" endian="big" sizex="1" userlevel="1">
       <scaling units="s" expression="x*0.025+(0)" to_byte="(x-(0))/0.025" format="0.0000" fineincrement="0.025" coarseincrement="0.1" />
@@ -1915,7 +1915,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Fuel correction loaded after a mode change when load is high enough.</description>
+      <description>Fuel correction loaded after a mode change when load is high enough. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Transition Fuel Correction - Amount Decay" category="Fueling" storageaddress="0xA664" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="%/s" expression="x*40+(0)" to_byte="(x-(0))/40" format="0.0000" fineincrement="0.4" coarseincrement="4" />
@@ -1929,7 +1929,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Fuel correction removed per second while this correction returns to zero. Applied in 25 ms steps when the decay conditions are met.</description>
+      <description>Fuel correction removed per second while this correction returns to zero. Applied in 25 ms steps when the decay conditions are met. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Transition Fuel Correction - Load Threshold" category="Fueling" storageaddress="0xA684" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1949,7 +1949,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Minimum load required to load the transition fuel correction after a mode change.</description>
+      <description>Minimum load required to load the transition fuel correction after a mode change. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Transition Fuel Correction - Load Threshold Hysteresis" category="Fueling" storageaddress="0xA6BC" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1969,7 +1969,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Load drop below the threshold needed to clear the high load condition.</description>
+      <description>Load drop below the threshold needed to clear the high load condition. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Warmup Enrichment" category="Fueling" storageaddress="0xA730" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Enrichment" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1990,7 +1990,7 @@
         <data>194</data>
         <data>212</data>
       </table>
-      <description>Warmup enrichment amount. The higher cold-start or warmup state is used, then fades with its decrement.</description>
+      <description>Warmup enrichment amount. The higher cold-start or warmup state is used, then fades with its decrement. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Warmup Enrichment Decrement" category="Fueling" storageaddress="0xA7A8" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Enrichment" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -2011,7 +2011,7 @@
         <data>194</data>
         <data>212</data>
       </table>
-      <description>Larger values remove warmup enrichment faster during enabled updates, down to zero.</description>
+      <description>Larger values remove warmup enrichment faster during enabled updates, down to zero. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Fuel Pressure Cold Limit" category="Fueling / Fuel Pressure" storageaddress="0x2DDB4" storagetype="uint8" endian="big" sizex="9" userlevel="1">
       <scaling units="psi" expression="x*9.914689102651021+(-253.81604102786613)" to_byte="(x-(-253.81604102786613))/9.914689102651021" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3518,10 +3518,10 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Maximum permitted ignition timing indexed by load and engine speed under abnormal operating conditions.</description>
+      <description>Maximum permitted ignition timing indexed by load and engine speed under abnormal operating conditions. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Closed Loop Base Timing Abnormal" category="Ignition" storageaddress="0x1E1C4" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
-      <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="deg advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
         <data>500</data>
         <data>1000</data>
@@ -3562,10 +3562,10 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Closed-loop base ignition timing under abnormal operating conditions; blended with open-loop timing during the closed/open-loop transition.</description>
+      <description>Closed-loop endpoint of the ignition blend for abnormal without overload mode. Higher values add advance. Blend weight controls its contribution; mode flags select the bank. Above 4000 RPM, this lookup holds its last column.</description>
     </table>
     <table type="3D" name="Closed Loop Base Timing Abnormal Overload" category="Ignition" storageaddress="0x1E544" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
-      <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="deg advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
         <data>500</data>
         <data>1000</data>
@@ -3606,10 +3606,10 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Base closed-loop ignition timing for abnormal operation with overload.</description>
+      <description>Closed-loop endpoint of the ignition blend for abnormal and overload mode. Higher values add advance. Blend weight controls its contribution; mode flags select the bank. Above 4000 RPM, this lookup holds its last column.</description>
     </table>
     <table type="3D" name="Closed Loop Base Timing Normal" category="Ignition" storageaddress="0x1E8C4" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
-      <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="deg advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
         <data>500</data>
         <data>1000</data>
@@ -3656,10 +3656,10 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Base closed-loop ignition timing under normal conditions. Blended with open-loop timing during transition.</description>
+      <description>Closed-loop endpoint of the ignition blend for normal without overload mode. Higher values add advance. Blend weight controls its contribution; mode flags select the bank. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Closed Loop Base Timing Normal Overload" category="Ignition" storageaddress="0x1EEE4" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
-      <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="deg advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
         <data>500</data>
         <data>1000</data>
@@ -3706,7 +3706,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Base closed-loop ignition timing under overload. Blended with open-loop timing during transition.</description>
+      <description>Closed-loop endpoint of the ignition blend for normal and overload mode. Higher values add advance. Blend weight controls its contribution; mode flags select the bank. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Closed Loop Max Ignition Timing" category="Ignition" storageaddress="0x1FE54" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="31">
       <scaling units="° ignition advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3759,10 +3759,10 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Maximum closed-loop ignition timing under normal conditions; blended with open-loop timing during transition.</description>
+      <description>Maximum closed-loop ignition timing under normal conditions; blended with open-loop timing during transition. Uses nearest edge outside axes.</description>
     </table>
-    <table type="3D" name="High BAT/ECT Retard Knocking" category="Ignition" storageaddress="0x1F504" storagetype="float" endian="big" sizex="9" userlevel="1" sizey="9">
-      <scaling units="° timing retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+    <table type="3D" name="High BAT/ECT Retard - Abnormal Mode" category="Ignition" storageaddress="0x1F648" storagetype="float" endian="big" sizex="9" userlevel="1" sizey="9">
+      <scaling units="deg retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Boost Air Temperature (°F)" sizex="9">
         <data>68</data>
         <data>86</data>
@@ -3785,7 +3785,33 @@
         <data>230</data>
         <data>248</data>
       </table>
-      <description>Temperature-based ignition retard. Selected by the ECU operating mode.</description>
+      <description>Temperature-based retard for abnormal ignition mode, selected alongside abnormal base-timing maps. Higher positive values remove more timing. RPM/load multipliers scale the retard. Uses nearest edge outside axes.</description>
+    </table>
+    <table type="3D" name="High BAT/ECT Retard - Normal Mode" category="Ignition" storageaddress="0x1F504" storagetype="float" endian="big" sizex="9" userlevel="1" sizey="9">
+      <scaling units="deg retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Boost Air Temperature (°F)" sizex="9">
+        <data>68</data>
+        <data>86</data>
+        <data>104</data>
+        <data>122</data>
+        <data>140</data>
+        <data>158</data>
+        <data>176</data>
+        <data>194</data>
+        <data>212</data>
+      </table>
+      <table type="Static Y Axis" name="Engine Coolant Temperature (°F)" sizex="9">
+        <data>104</data>
+        <data>122</data>
+        <data>140</data>
+        <data>158</data>
+        <data>176</data>
+        <data>194</data>
+        <data>212</data>
+        <data>230</data>
+        <data>248</data>
+      </table>
+      <description>Temperature-based retard for normal ignition mode, selected alongside normal base-timing maps. Higher positive values remove more timing. RPM/load multipliers scale the retard. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="High BAT/ECT Retard Multiplier 1" category="Ignition" storageaddress="0x40600" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3835,7 +3861,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Engine-speed and load multiplier for temperature-based ignition retard.</description>
+      <description>First endpoint of the RPM/load multiplier blend for temperature retard. A value of 1 leaves retard unchanged; higher values increase retard. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="High BAT/ECT Retard Multiplier 2" category="Ignition" storageaddress="0x40c20" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3885,33 +3911,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Alternate engine-speed and load multiplier for temperature-based ignition retard.</description>
-    </table>
-    <table type="3D" name="High BAT/ECT Retard No Knock" category="Ignition" storageaddress="0x1F648" storagetype="float" endian="big" sizex="9" userlevel="1" sizey="9">
-      <scaling units="° timing retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Boost Air Temperature (°F)" sizex="9">
-        <data>68</data>
-        <data>86</data>
-        <data>104</data>
-        <data>122</data>
-        <data>140</data>
-        <data>158</data>
-        <data>176</data>
-        <data>194</data>
-        <data>212</data>
-      </table>
-      <table type="Static Y Axis" name="Engine Coolant Temperature (°F)" sizex="9">
-        <data>104</data>
-        <data>122</data>
-        <data>140</data>
-        <data>158</data>
-        <data>176</data>
-        <data>194</data>
-        <data>212</data>
-        <data>230</data>
-        <data>248</data>
-      </table>
-      <description>Temperature-based ignition retard for the alternate operating mode.</description>
+      <description>Second endpoint of the RPM/load multiplier blend for temperature retard. A value of 1 leaves retard unchanged; higher values increase retard. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Ignition Coolant and Load Correction" category="Ignition" storageaddress="0x21eec" storagetype="float" endian="big" sizex="6" userlevel="1" sizey="17">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3942,7 +3942,7 @@
         <data>1.875</data>
         <data>2.0</data>
       </table>
-      <description>Ignition timing correction by coolant temperature and load. Positive values advance timing; negative values retard it.</description>
+      <description>Ignition timing correction by coolant temperature and load. Positive values advance timing; negative values retard it. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Ignition Coolant Correction - Alternate" category="Ignition" storageaddress="0xACE8" storagetype="float" endian="big" sizex="7" userlevel="1">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3955,7 +3955,7 @@
         <data>140.0</data>
         <data>176.0</data>
       </table>
-      <description>Adds timing by coolant temperature in the alternate correction mode, before other timing limits.</description>
+      <description>Adds timing by coolant temperature in the alternate correction mode, before other timing limits. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Ignition Coolant Correction - Transition" category="Ignition" storageaddress="0xAD04" storagetype="float" endian="big" sizex="7" userlevel="1">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3968,7 +3968,7 @@
         <data>140.0</data>
         <data>176.0</data>
       </table>
-      <description>Adds temporary timing after the alternate mode ends, then fades toward zero.</description>
+      <description>Adds temporary timing after the alternate mode ends, then fades toward zero. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Knock Retard Additive" category="Ignition" storageaddress="0x208FC" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="27">
       <scaling units="° retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4017,7 +4017,7 @@
         <data>1.9375</data>
         <data>2.0</data>
       </table>
-      <description>Additional retard applied to knock retard by engine-speed and load point.</description>
+      <description>Additional retard applied to knock retard by engine-speed and load point. Uses nearest edge outside axes.</description>
     </table>
     <table type="1D" name="Knock Retard Decrement Step Size 1" category="Ignition" storageaddress="0x679b8" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="°" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4072,7 +4072,7 @@
         <data>1.9375</data>
         <data>2.0</data>
       </table>
-      <description>Knock-retard recovery decrement indexed by load and RPM, applied at decrement-timer expiry until retard reaches zero.</description>
+      <description>Knock-retard recovery decrement indexed by load and RPM, applied at decrement-timer expiry until retard reaches zero. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Knock Retard Limit" category="Ignition" storageaddress="0x40340" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4092,7 +4092,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Limit for knock-retard increases by engine speed. Lowering it may not immediately reduce existing retard.</description>
+      <description>Limit for knock-retard increases by engine speed. Lowering it may not immediately reduce existing retard. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Knock Retard Multiplier" category="Ignition" storageaddress="0x20EE4" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="27">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4141,7 +4141,7 @@
         <data>1.9375</data>
         <data>2.0</data>
       </table>
-      <description>Multiplier applied to knock retard by load and engine speed.</description>
+      <description>Multiplier applied to knock retard by load and engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="1D" name="Knock Retard Recovery Interval - 1" category="Ignition" storageaddress="0x8c54" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="s" expression="x*0.001+(0)" to_byte="(x-(0))/0.001" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
@@ -4177,7 +4177,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Minimum load for this knock-retard mode at each engine speed.</description>
+      <description>Minimum load for this knock-retard mode at each engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Knock Retard Threshold Min Load 2" category="Ignition" storageaddress="0xafd0" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4197,14 +4197,14 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Minimum load for this knock-retard mode at each engine speed.</description>
+      <description>Minimum load for this knock-retard mode at each engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="1D" name="Knock Retard Threshold Min RPM" category="Ignition" storageaddress="0x8134" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Lower engine-speed threshold for the knock-retard operating window.</description>
     </table>
     <table type="3D" name="Open Loop Base Timing Abnormal" category="Ignition" storageaddress="0x1CE84" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
-      <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="deg advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
         <data>500</data>
         <data>1000</data>
@@ -4245,10 +4245,10 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Open-loop base ignition timing under abnormal operating conditions, blended with the closed-loop table during transition.</description>
+      <description>Open-loop endpoint of the ignition blend for abnormal without overload mode. Higher values add advance. Blend weight controls its contribution; mode flags select the bank. Above 4000 RPM, this lookup holds its last column.</description>
     </table>
     <table type="3D" name="Open Loop Base Timing Abnormal Overload" category="Ignition" storageaddress="0x1D204" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
-      <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="deg advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="8">
         <data>500</data>
         <data>1000</data>
@@ -4289,10 +4289,10 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Open-loop base ignition timing under abnormal operating conditions with overload, blended with the closed-loop table during transition.</description>
+      <description>Open-loop endpoint of the ignition blend for abnormal and overload mode. Higher values add advance. Blend weight controls its contribution; mode flags select the bank. Above 4000 RPM, this lookup holds its last column.</description>
     </table>
     <table type="3D" name="Open Loop Base Timing Normal" category="Ignition" storageaddress="0x1D584" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
-      <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="deg advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
         <data>500</data>
         <data>1000</data>
@@ -4339,10 +4339,10 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Base open-loop ignition timing under normal conditions. Blended with closed-loop timing during transition.</description>
+      <description>Open-loop endpoint of the ignition blend for normal without overload mode. Higher values add advance. Blend weight controls its contribution; mode flags select the bank. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Open Loop Base Timing Normal Overload" category="Ignition" storageaddress="0x1DBA4" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
-      <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="deg advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
         <data>500</data>
         <data>1000</data>
@@ -4389,7 +4389,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Base open-loop ignition timing during overload. Blended with closed-loop timing during transition.</description>
+      <description>Open-loop endpoint of the ignition blend for normal and overload mode. Higher values add advance. Blend weight controls its contribution; mode flags select the bank. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Open Loop Max Ignition Timing" category="Ignition" storageaddress="0x1F78C" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="31">
       <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4442,7 +4442,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Maximum permitted open-loop ignition timing by load and RPM, blended with the closed-loop table during transition.</description>
+      <description>Maximum permitted open-loop ignition timing by load and RPM, blended with the closed-loop table during transition. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Overload Retard" category="Ignition" storageaddress="0x252B0" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
       <scaling units="° retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4492,7 +4492,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Positive values remove timing; negative values add timing while this correction is enabled.</description>
+      <description>Positive values remove timing; negative values add timing while this correction is enabled. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Supplemental Spark Retard - Load" category="Ignition" storageaddress="0xACC0" storagetype="float" endian="big" sizex="10" userlevel="1">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4508,7 +4508,7 @@
         <data>0.5</data>
         <data>0.5625</data>
       </table>
-      <description>Adds a retard request by load when enabled. The largest competing request applies before other timing limits.</description>
+      <description>Adds a retard request by load when enabled. The largest competing request applies before other timing limits. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="Supplemental Spark Retard - RPM Cap" category="Ignition" storageaddress="0xAC88" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4528,7 +4528,7 @@
         <data>6500.0</data>
         <data>7000.0</data>
       </table>
-      <description>Limits accumulated spark retard by RPM. Its activation conditions and ramp settings also apply.</description>
+      <description>Limits accumulated spark retard by RPM. Its activation conditions and ramp settings also apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Timed Load-Based Ignition Retard" category="Ignition" storageaddress="0x1C864" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="28">
       <scaling units="° retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4578,7 +4578,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Load-based ignition retard while its timer and latch allow. Warm-engine open-loop operation can inhibit it.</description>
+      <description>Load-based ignition retard while its timer and latch allow. Warm-engine open-loop operation can inhibit it. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Unk Retard Step Size" category="Ignition" storageaddress="0x214CC" storagetype="float" endian="big" sizex="12" userlevel="1" sizey="27">
       <scaling units="° retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4625,7 +4625,7 @@
         <data>1.9375</data>
         <data>2.0</data>
       </table>
-      <description>Alternate knock-retard step by engine speed and load. Inactive with the original strategy selector.</description>
+      <description>Alternate knock-retard step by engine speed and load. Inactive with the original strategy selector. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="APP Requested Load Knocking" category="Load Targeting" storageaddress="0x34D68" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4665,7 +4665,7 @@
         <data>93.75</data>
         <data>100</data>
       </table>
-      <description>Requested load by engine speed and accelerator position for the knock-related strategy. Other load limits still apply.</description>
+      <description>Requested load for knock-related mode by RPM and pedal position. Overload takes priority over knock-related mode. Higher values request more load; final load ceilings still apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="APP Requested Load Normal" category="Load Targeting" storageaddress="0x3496C" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4705,7 +4705,7 @@
         <data>93.75</data>
         <data>100</data>
       </table>
-      <description>Base requested load by RPM and accelerator pedal position under normal conditions.</description>
+      <description>Requested load for normal mode by RPM and pedal position. Overload takes priority over knock-related mode. Higher values request more load; final load ceilings still apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="APP Requested Load Overload" category="Load Targeting" storageaddress="0x34570" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4745,11 +4745,11 @@
         <data>93.75</data>
         <data>100</data>
       </table>
-      <description>Base requested load by RPM and accelerator pedal position while overload is detected.</description>
+      <description>Requested load for overload mode by RPM and pedal position. Overload takes priority over knock-related mode. Higher values request more load; final load ceilings still apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="BCS DC Adjustment - Load Target Correction - Incremental" category="Load Targeting" storageaddress="0x30A4C" storagetype="float" endian="big" sizex="11" userlevel="1">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Load target deviation (Load)" sizex="11">
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Actual Load - Target Load (Load)" sizex="11">
         <data>-0.1856</data>
         <data>-0.0811</data>
         <data>-0.0464</data>
@@ -4762,11 +4762,11 @@
         <data>0.232</data>
         <data>0.464</data>
       </table>
-      <description>Adds to the accumulated boost solenoid duty correction from load error.</description>
+      <description>Added to accumulated duty correction each controller update, from actual load minus target load. Positive values add duty; negative values subtract duty. Accumulated and combined limits apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="2D" name="BCS DC Adjustment - Load Target Correction - Initial" category="Load Targeting" storageaddress="0x30A20" storagetype="float" endian="big" sizex="11" userlevel="1">
-      <scaling units="%" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Load target deviation (Load)" sizex="11">
+      <scaling units="duty % points" expression="x*2+(0)" to_byte="(x-(0))/2" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Actual Load - Target Load (Load)" sizex="11">
         <data>-0.1856</data>
         <data>-0.0811</data>
         <data>-0.0464</data>
@@ -4779,7 +4779,7 @@
         <data>0.232</data>
         <data>0.464</data>
       </table>
-      <description>Adds the initial boost solenoid duty correction from load error.</description>
+      <description>Initial duty-point correction from actual load minus target load. Positive values add duty; negative values subtract duty. Combined correction limits apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="1D" name="Per Gear Requested Load Limit - High BAT Flag Lower Limit" category="Load Targeting" storageaddress="0x9b34" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="°F" expression="x*1.8+(32)" to_byte="(x-(32))/1.8" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5095,7 +5095,7 @@
         <data>14.70972709502579</data>
         <data>15.858425712277018</data>
       </table>
-      <description>Requested-load limit by RPM and barometric pressure. Uses the lowest-pressure row during a barometric fault.</description>
+      <description>Requested-load limit by RPM and barometric pressure. Uses the lowest-pressure row during a barometric fault. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 1st - 2nd Gear Normal" category="Load Targeting" storageaddress="0x32030" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5131,7 +5131,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Requested-load multiplier using current and retained engine speed.</description>
+      <description>Requested-load multiplier using current and retained engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 1st - 2nd Gear with APP Increase" category="Load Targeting" storageaddress="0x31D20" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5167,7 +5167,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Requested-load multiplier during accelerator increases, using current and retained engine speed.</description>
+      <description>Requested-load multiplier during accelerator increases, using current and retained engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 3rd Gear Normal" category="Load Targeting" storageaddress="0x32650" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5203,7 +5203,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Requested-load multiplier using current and retained engine speed.</description>
+      <description>Requested-load multiplier using current and retained engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 3rd Gear with APP Increase" category="Load Targeting" storageaddress="0x32340" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5239,7 +5239,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Requested-load multiplier during accelerator increases, using current and retained engine speed.</description>
+      <description>Requested-load multiplier during accelerator increases, using current and retained engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 4th Gear Normal" category="Load Targeting" storageaddress="0x32C70" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5275,7 +5275,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Requested-load multiplier using current and retained engine speed.</description>
+      <description>Requested-load multiplier using current and retained engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 4th Gear with APP Increase" category="Load Targeting" storageaddress="0x32960" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5311,7 +5311,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Requested-load multiplier during accelerator increases, using current and retained engine speed.</description>
+      <description>Requested-load multiplier during accelerator increases, using current and retained engine speed. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 5th-6th Gear Normal" category="Load Targeting" storageaddress="0x33290" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5347,7 +5347,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Requested-load multiplier using current and retained engine speed. Bypassed by this ROM's original gear-range settings.</description>
+      <description>Requested-load multiplier using current and retained engine speed. Bypassed by this ROM's original gear-range settings. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Requested Load Multiplier Accel/Decel Adjustment 5th-6th Gear with APP Increase" category="Load Targeting" storageaddress="0x32F80" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="14">
       <scaling units="Multiplier" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5383,7 +5383,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Requested-load multiplier during accelerator increases, using current and retained engine speed. Bypassed by this ROM's original gear-range settings.</description>
+      <description>Requested-load multiplier during accelerator increases, using current and retained engine speed. Bypassed by this ROM's original gear-range settings. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Volumetric Efficiency" category="Load Targeting" storageaddress="0xD6CC" storagetype="float" endian="big" sizex="16" userlevel="1" sizey="33">
       <scaling units="Ratio" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5440,7 +5440,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Volumetric efficiency of the engine by RPM and load.</description>
+      <description>Volumetric efficiency of the engine by RPM and load. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Volumetric Efficiency - VVT Modifier" category="Load Targeting" storageaddress="0xDF0C" storagetype="float" endian="big" sizex="16" userlevel="1" sizey="31">
       <scaling units="Ratio" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5495,7 +5495,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Adjustment added to base volumetric efficiency when the VVT correction is active.</description>
+      <description>Adjustment added to base volumetric efficiency when the VVT correction is active. Uses nearest edge outside axes.</description>
     </table>
     <table type="Switch" name="Disable Decel Fuel Cut" category="Options" storageaddress="0x590ca" storagetype="uint8" endian="big" sizex="1" userlevel="1">
       <state name="Stock deceleration fuel cut" data="8D" />
@@ -6069,7 +6069,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Throttle opening by RPM and corrected load for the knock-related strategy. Air-density and intake-temperature corrections shift the load lookup. Later limits and overrides still apply.</description>
+      <description>Knock-related-mode throttle target by RPM and corrected load. Higher values request more opening. Overload takes priority over knock-related mode. Density/temperature corrections shift the lookup; later limits apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="DBW Throttle Normal" category="Throttle Control" storageaddress="0x35920" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="33">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -6125,7 +6125,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Throttle opening by RPM and corrected load for the normal strategy. Air-density and intake-temperature corrections shift the load lookup. Later limits and overrides still apply.</description>
+      <description>Normal-mode throttle target by RPM and corrected load. Higher values request more opening. Overload takes priority over knock-related mode. Density/temperature corrections shift the lookup; later limits apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="DBW Throttle Overload" category="Throttle Control" storageaddress="0x35164" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="33">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -6181,7 +6181,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Throttle opening by RPM and corrected load for the overload strategy. Air-density and intake-temperature corrections shift the load lookup. Later limits and overrides still apply.</description>
+      <description>Overload-mode throttle target by RPM and corrected load. Higher values request more opening. Overload takes priority over knock-related mode. Density/temperature corrections shift the lookup; later limits apply. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="Intake Cam Advance (VVT)" category="Valve Timing" storageaddress="0x24260" storagetype="float" endian="big" sizex="14" userlevel="1" sizey="32">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -6235,7 +6235,7 @@
         <data>1.9375</data>
         <data>2</data>
       </table>
-      <description>Base intake cam advance by engine speed and load.</description>
+      <description>Base intake-cam advance target by RPM and load. Higher values request more advance. A correction weight scales this target; state and high-RPM overrides can replace it. Uses nearest edge outside axes.</description>
     </table>
     <table type="BitwiseSwitch" name="B1213 Only One Transponder Key Registered - DTC Participation" category="DTC Controls" storageaddress="0x3bd16" storagetype="uint16" endian="big" sizex="1" userlevel="1">
       <scaling units="enabled" expression="x" to_byte="x" format="0" fineincrement="1" coarseincrement="1" />
