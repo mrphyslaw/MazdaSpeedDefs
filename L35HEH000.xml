@@ -12,7 +12,7 @@
       <memmodel>SH-2E family</memmodel>
       <filesize>1024kb</filesize>
       <author>mrphyslaw</author>
-      <version>0.2 injection timing draft</version>
+      <version>0.3 timing and time units draft</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL35H" />
@@ -189,16 +189,16 @@
       <description>Accelerator-pedal position threshold by RPM that triggers transition to open-loop fueling.</description>
     </table>
     <table type="1D" name="Closed Loop Open Loop Transition Timer 1" category="Absolute Limits" storageaddress="0x897e" storagetype="uint8" endian="big" sizex="1" userlevel="1">
-      <scaling units="timer ticks" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Delay before switching from closed-loop to open-loop fueling.</description>
+      <scaling units="s" expression="x*0.1+(0)" to_byte="(x-(0))/0.1" format="0.0000" fineincrement="0.1" coarseincrement="0.5" />
+      <description>Delay before switching fueling mode while the qualifying conditions remain true. Counts down in 100 ms steps.</description>
     </table>
     <table type="1D" name="Closed Loop Open Loop Transition Timer 2" category="Absolute Limits" storageaddress="0x8982" storagetype="uint8" endian="big" sizex="1" userlevel="1">
-      <scaling units="timer ticks" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Delay before switching from closed-loop to open-loop fueling.</description>
+      <scaling units="s" expression="x*0.1+(0)" to_byte="(x-(0))/0.1" format="0.0000" fineincrement="0.1" coarseincrement="0.5" />
+      <description>Delay before switching fueling mode while the qualifying conditions remain true. Counts down in 100 ms steps.</description>
     </table>
     <table type="1D" name="Closed Loop Open Loop Transition Timer 3" category="Absolute Limits" storageaddress="0x8983" storagetype="uint8" endian="big" sizex="1" userlevel="1">
-      <scaling units="timer ticks" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Delay before switching from closed-loop to open-loop fueling.</description>
+      <scaling units="s" expression="x*0.1+(0)" to_byte="(x-(0))/0.1" format="0.0000" fineincrement="0.1" coarseincrement="0.5" />
+      <description>Delay before switching fueling mode while the qualifying conditions remain true. Counts down in 100 ms steps.</description>
     </table>
     <table type="2D" name="Load Limit Force Spark Retard" category="Absolute Limits" storageaddress="0xb30c" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -1077,7 +1077,7 @@
       <description>Closed-loop fuel targets indexed by load and engine speed.</description>
     </table>
     <table type="3D" name="Clutch Press Timer" category="Fueling" storageaddress="0x29f4c" storagetype="uint8" endian="big" sizex="14" userlevel="1" sizey="6">
-      <scaling units="task updates" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="s" expression="x*0.005+(0)" to_byte="(x-(0))/0.005" format="0.0000" fineincrement="0.005" coarseincrement="0.025" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
         <data>500</data>
         <data>1000</data>
@@ -1102,7 +1102,7 @@
         <data>5</data>
         <data>6</data>
       </table>
-      <description>Countdown loaded on a qualified clutch press. Holds two related fuel-cut countdowns at zero while active.</description>
+      <description>Hold time after a qualifying clutch press. Counts down every 5 ms and keeps the related fuel-cut countdowns at zero while active.</description>
     </table>
     <table type="2D" name="Cold Cranking and Afterstart Enrichment" category="Fueling" storageaddress="0xa970" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Enrichment" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -2054,7 +2054,7 @@
       <description>Fuel correction loaded after a qualifying mode change while the hold counter is active.</description>
     </table>
     <table type="2D" name="Timed Fuel Correction - Decay" category="Fueling" storageaddress="0xac38" storagetype="float" endian="big" sizex="8" userlevel="1">
-      <scaling units="%/update" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="%/engine event" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
       <table type="Static X Axis" name="Coolant Temperature (°F)" sizex="8">
         <data>-40</data>
         <data>-4</data>
@@ -2065,11 +2065,11 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Amount removed each fuel update after the hold expires.</description>
+      <description>Correction removed at each 180-degree crank event after the hold expires. Elapsed time varies with RPM; this is not a fixed-time decay rate.</description>
     </table>
-    <table type="1D" name="Timed Fuel Correction - Hold Updates" category="Fueling" storageaddress="0x89f8" storagetype="uint8" endian="big" sizex="1" userlevel="1">
-      <scaling units="updates" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Number of control updates to hold the correction after the mode change.</description>
+    <table type="1D" name="Timed Fuel Correction - Hold Time" category="Fueling" storageaddress="0x89f8" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+      <scaling units="s" expression="x*0.025+(0)" to_byte="(x-(0))/0.025" format="0.0000" fineincrement="0.025" coarseincrement="0.1" />
+      <description>Time to hold the correction after a qualifying mode change. Counts down in 25 ms steps; release conditions can end the hold early.</description>
     </table>
     <table type="2D" name="Transition Fuel Correction - Amount" category="Fueling" storageaddress="0xa8c0" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="%" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -2086,7 +2086,7 @@
       <description>Fuel correction loaded after a mode change when load is high enough.</description>
     </table>
     <table type="2D" name="Transition Fuel Correction - Amount Decay" category="Fueling" storageaddress="0xa8e0" storagetype="float" endian="big" sizex="8" userlevel="1">
-      <scaling units="%/update" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <scaling units="%/s" expression="x*40+(0)" to_byte="(x-(0))/40" format="0.0000" fineincrement="0.4" coarseincrement="4" />
       <table type="Static X Axis" name="Coolant Temperature (°F)" sizex="8">
         <data>-40</data>
         <data>-4</data>
@@ -2097,7 +2097,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Fuel correction removed each update while the amount returns to zero.</description>
+      <description>Fuel correction removed per second while this correction returns to zero. Applied in 25 ms steps when the decay conditions are met.</description>
     </table>
     <table type="2D" name="Transition Fuel Correction - Load Threshold" category="Fueling" storageaddress="0xa900" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -2181,13 +2181,13 @@
       </table>
       <description>Larger values remove warmup enrichment faster during enabled updates, down to zero.</description>
     </table>
-    <table type="3D" name="Injection Phase - Alternate 1" category="Fueling / Injection Timing" storageaddress="0x35550" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
-      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+    <table type="2D" name="Injection Capacity End Phase Minimum" category="Fueling / Injection Timing" storageaddress="0x369ce" storagetype="uint16" endian="big" sizex="19" userlevel="1">
+      <scaling units="deg ECU phase" expression="x*0.02197265625+(0)" to_byte="(x-(0))/0.02197265625" format="0.0000" fineincrement="0.02197265625" coarseincrement="0.2197265625" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
         <data>500</data>
-        <data>593.75</data>
-        <data>687.5</data>
-        <data>812.5</data>
+        <data>601.5625</data>
+        <data>699.21875</data>
+        <data>800.78125</data>
         <data>1000</data>
         <data>1250</data>
         <data>1500</data>
@@ -2204,96 +2204,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <table type="Static Y Axis" name="Load" sizey="30">
-        <data>0</data>
-        <data>0.05</data>
-        <data>0.1</data>
-        <data>0.15</data>
-        <data>0.2</data>
-        <data>0.25</data>
-        <data>0.3</data>
-        <data>0.35</data>
-        <data>0.4</data>
-        <data>0.45</data>
-        <data>0.5</data>
-        <data>0.55</data>
-        <data>0.6</data>
-        <data>0.65</data>
-        <data>0.7</data>
-        <data>0.75</data>
-        <data>0.8</data>
-        <data>0.85</data>
-        <data>0.9</data>
-        <data>0.95</data>
-        <data>1</data>
-        <data>1.1</data>
-        <data>1.2</data>
-        <data>1.3</data>
-        <data>1.4</data>
-        <data>1.5</data>
-        <data>1.6</data>
-        <data>1.7</data>
-        <data>1.8</data>
-        <data>2</data>
-      </table>
-      <description>Alternate commanded injection phase by RPM and load, selected by ECU operating-state logic. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
-    </table>
-    <table type="3D" name="Injection Phase - Alternate 2" category="Fueling / Injection Timing" storageaddress="0x35e50" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
-      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
-        <data>500</data>
-        <data>593.75</data>
-        <data>687.5</data>
-        <data>812.5</data>
-        <data>1000</data>
-        <data>1250</data>
-        <data>1500</data>
-        <data>1750</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-        <data>7000</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizey="30">
-        <data>0</data>
-        <data>0.05</data>
-        <data>0.1</data>
-        <data>0.15</data>
-        <data>0.2</data>
-        <data>0.25</data>
-        <data>0.3</data>
-        <data>0.35</data>
-        <data>0.4</data>
-        <data>0.45</data>
-        <data>0.5</data>
-        <data>0.55</data>
-        <data>0.6</data>
-        <data>0.65</data>
-        <data>0.7</data>
-        <data>0.75</data>
-        <data>0.8</data>
-        <data>0.85</data>
-        <data>0.9</data>
-        <data>0.95</data>
-        <data>1</data>
-        <data>1.1</data>
-        <data>1.2</data>
-        <data>1.3</data>
-        <data>1.4</data>
-        <data>1.5</data>
-        <data>1.6</data>
-        <data>1.7</data>
-        <data>1.8</data>
-        <data>2</data>
-      </table>
-      <description>Alternate commanded injection phase by RPM and load, selected by ECU operating-state logic. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+      <description>End boundary used to calculate available injection time and the fuel-capacity limit. It does not directly clamp the end-phase target. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
     </table>
     <table type="3D" name="Injection Phase - Base" category="Fueling / Injection Timing" storageaddress="0x41de0" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
       <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
@@ -2350,7 +2261,64 @@
         <data>1.8</data>
         <data>2</data>
       </table>
-      <description>Base commanded injection phase by RPM and load, before operating-state corrections. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+      <description>Target end of electrical injection by RPM and load, before blending and retard corrections. Larger values move the target earlier. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
+    </table>
+    <table type="3D" name="Injection Phase - Startup" category="Fueling / Injection Timing" storageaddress="0x35550" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>End-of-injection target used by the timed startup states. Takes priority over the warm and blended maps. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
     </table>
     <table type="3D" name="Injection Phase - Transition" category="Fueling / Injection Timing" storageaddress="0x359d0" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
       <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
@@ -2407,21 +2375,151 @@
         <data>1.8</data>
         <data>2</data>
       </table>
-      <description>Phase blended with the base map as the ECU changes operating state. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+      <description>End-of-injection target reached as blend weight increases. Pulsewidth and the start-phase maximum can move the actual end later. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
     </table>
-    <table type="1D" name="Injection Phase Blend Step" category="Fueling / Injection Timing" storageaddress="0x36d84" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="per update" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.00000" fineincrement="0.00001" coarseincrement="0.0001" />
-      <description>Controls how quickly phase blends toward the transition map. Higher values blend faster.</description>
+    <table type="3D" name="Injection Phase - Warm" category="Fueling / Injection Timing" storageaddress="0x35e50" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="30">
+      <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizey="30">
+        <data>0</data>
+        <data>0.05</data>
+        <data>0.1</data>
+        <data>0.15</data>
+        <data>0.2</data>
+        <data>0.25</data>
+        <data>0.3</data>
+        <data>0.35</data>
+        <data>0.4</data>
+        <data>0.45</data>
+        <data>0.5</data>
+        <data>0.55</data>
+        <data>0.6</data>
+        <data>0.65</data>
+        <data>0.7</data>
+        <data>0.75</data>
+        <data>0.8</data>
+        <data>0.85</data>
+        <data>0.9</data>
+        <data>0.95</data>
+        <data>1</data>
+        <data>1.1</data>
+        <data>1.2</data>
+        <data>1.3</data>
+        <data>1.4</data>
+        <data>1.5</data>
+        <data>1.6</data>
+        <data>1.7</data>
+        <data>1.8</data>
+        <data>2</data>
+      </table>
+      <description>End-of-injection target selected by the stored coolant warm-mode threshold. Startup timing takes priority. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
+    </table>
+    <table type="1D" name="Injection Phase Blend Rate" category="Fueling / Injection Timing" storageaddress="0x36d84" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="blend fraction/s" expression="x*40+(0)" to_byte="(x-(0))/40" format="0.0000" fineincrement="0.0004" coarseincrement="0.004" />
+      <description>Transition weight gained per second, in 25 ms steps. Higher values blend faster. A rate of 0.05 takes about 20 seconds to move from zero to full transition weight.</description>
     </table>
     <table type="1D" name="Injection Phase Fixed Value" category="Fueling / Injection Timing" storageaddress="0x36d74" storagetype="uint16" endian="big" sizex="1" userlevel="1">
       <scaling units="deg ECU phase" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
-      <description>Commanded injection phase used when the fixed-value override is enabled. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+      <description>End-of-injection target used with the fixed override. Bypasses map selection and phase corrections. Pulsewidth and the start-phase maximum still apply. ECU phase scale; absolute BTDC/ATDC zero remains unconfirmed.</description>
     </table>
     <table type="Switch" name="Injection Phase Fixed Value Enable" category="Fueling / Injection Timing" storageaddress="0x36d78" storagetype="uint8" endian="big" sizex="1" userlevel="1">
       <state name="Use Maps" data="00" />
       <state name="Use Fixed Value" data="01" />
       <scaling units="enabled" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
       <description>Enables the fixed injection phase value in place of the phase maps.</description>
+    </table>
+    <table type="1D" name="Injection Phase Minimum" category="Fueling / Injection Timing" storageaddress="0x37502" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+      <scaling units="deg ECU phase" expression="x*6+(0)" to_byte="(x-(0))/6" format="0.0000" fineincrement="6" coarseincrement="60" />
+      <description>Minimum end-phase target before pulse duration is added. The start-phase maximum can still move the actual end later. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
+    </table>
+    <table type="2D" name="Injection Phase Retard - After Start" category="Fueling / Injection Timing" storageaddress="0xd5dc" storagetype="uint16" endian="big" sizex="20" userlevel="1">
+      <scaling units="deg retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Time After Start (s)" sizex="20">
+        <data>0.5</data>
+        <data>1</data>
+        <data>1.5</data>
+        <data>2</data>
+        <data>2.5</data>
+        <data>3</data>
+        <data>3.5</data>
+        <data>4</data>
+        <data>4.5</data>
+        <data>5</data>
+        <data>5.5</data>
+        <data>6</data>
+        <data>6.5</data>
+        <data>7</data>
+        <data>7.5</data>
+        <data>8</data>
+        <data>8.5</data>
+        <data>9</data>
+        <data>9.5</data>
+        <data>10</data>
+      </table>
+      <description>Retards the end-phase target after the start state ends. Higher values move the target later. The fixed-value override bypasses this correction.</description>
+    </table>
+    <table type="3D" name="Injection Phase Retard - Coolant" category="Fueling / Injection Timing" storageaddress="0x36a00" storagetype="uint16" endian="big" sizex="19" userlevel="1" sizey="16">
+      <scaling units="deg retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>593.75</data>
+        <data>687.5</data>
+        <data>812.5</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <table type="Static Y Axis" name="Coolant Temperature (F)" sizey="16">
+        <data>-40</data>
+        <data>-22</data>
+        <data>-4</data>
+        <data>14</data>
+        <data>32</data>
+        <data>50</data>
+        <data>68</data>
+        <data>86</data>
+        <data>104</data>
+        <data>122</data>
+        <data>140</data>
+        <data>158</data>
+        <data>176</data>
+        <data>194</data>
+        <data>212</data>
+        <data>230</data>
+      </table>
+      <description>Retards the end-phase target by coolant temperature and RPM. Higher values move the target later. The fixed-value override bypasses this correction.</description>
     </table>
     <table type="3D" name="Injection Phase Temperature Correction" category="Fueling / Injection Timing" storageaddress="0x404f0" storagetype="uint8" endian="big" sizex="13" userlevel="1" sizey="7">
       <scaling units="deg" expression="x*1+(-180)" to_byte="(x-(-180))/1" format="0" fineincrement="1" coarseincrement="10" />
@@ -2497,6 +2595,39 @@
         <data>1.7</data>
       </table>
       <description>Scales the temperature-based phase correction by RPM and load.</description>
+    </table>
+    <table type="1D" name="Injection Phase Warm Mode Hysteresis" category="Fueling / Injection Timing" storageaddress="0x8740" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="F change" expression="x*1.8+(0)" to_byte="(x-(0))/1.8" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
+      <description>Temperature drop below the warm-mode threshold needed to return to normal phase selection.</description>
+    </table>
+    <table type="1D" name="Injection Phase Warm Mode Temperature" category="Fueling / Injection Timing" storageaddress="0x873c" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="F" expression="x*1.8+(32)" to_byte="(x-(32))/1.8" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
+      <description>Stored coolant temperature that selects the warm phase map. Startup timing and the fixed-value override take priority.</description>
+    </table>
+    <table type="2D" name="Injection Start Phase Maximum" category="Fueling / Injection Timing" storageaddress="0x36972" storagetype="uint16" endian="big" sizex="19" userlevel="1">
+      <scaling units="deg ECU phase" expression="x*0.02197265625+(0)" to_byte="(x-(0))/0.02197265625" format="0.0000" fineincrement="0.02197265625" coarseincrement="0.2197265625" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="19">
+        <data>500</data>
+        <data>601.5625</data>
+        <data>699.21875</data>
+        <data>800.78125</data>
+        <data>1000</data>
+        <data>1250</data>
+        <data>1500</data>
+        <data>1750</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+        <data>7000</data>
+      </table>
+      <description>Earliest allowed injection start. A longer pulse moves injection end later once this limit is reached. ECU phase reference; BTDC/ATDC zero is unconfirmed.</description>
     </table>
     <table type="2D" name="Injector Base Pulsewidth - 1" category="Fueling / Injector Characterization" storageaddress="0x34a3a" storagetype="uint16" endian="big" sizex="17" userlevel="1">
       <scaling units="coefficient" expression="x*1+(0)" to_byte="(x-(0))/1" format="0" fineincrement="1" coarseincrement="10" />
@@ -3592,6 +3723,14 @@
       </table>
       <description>Multiplier applied to knock retard by load and engine speed.</description>
     </table>
+    <table type="1D" name="Knock Retard Recovery Interval - 1" category="Ignition" storageaddress="0x8ca4" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="s" expression="x*0.001+(0)" to_byte="(x-(0))/0.001" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
+      <description>Interval between knock-retard recovery steps. Counts down in 10 ms steps, so the effective interval rounds up to the next 10 ms.</description>
+    </table>
+    <table type="1D" name="Knock Retard Recovery Interval - 2" category="Ignition" storageaddress="0x8c04" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="s" expression="x*0.001+(0)" to_byte="(x-(0))/0.001" format="0.0000" fineincrement="0.01" coarseincrement="0.1" />
+      <description>Interval between knock-retard recovery steps. Counts down in 10 ms steps, so the effective interval rounds up to the next 10 ms.</description>
+    </table>
     <table type="1D" name="Knock Retard Threshold Max RPM" category="Ignition" storageaddress="0x813c" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Upper engine-speed threshold for the knock-retard operating window. A separate mode can override it.</description>
@@ -3643,14 +3782,6 @@
     <table type="1D" name="Knock Retard Threshold Min RPM" category="Ignition" storageaddress="0x8134" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Lower engine-speed threshold for the knock-retard operating window.</description>
-    </table>
-    <table type="1D" name="Knock Retard Timer Decrement Step Size 1" category="Ignition" storageaddress="0x8ca4" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="Timer Ticks" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Reload value for this knock-retard recovery timer. Larger values lengthen the interval.</description>
-    </table>
-    <table type="1D" name="Knock Retard Timer Decrement Step Size 2" category="Ignition" storageaddress="0x8c04" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="Timer Ticks" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Reload value for this knock-retard recovery timer. Larger values lengthen the interval.</description>
     </table>
     <table type="3D" name="Open Loop Base Timing Abnormal" category="Ignition" storageaddress="0x1d7c8" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="28">
       <scaling units="° advance" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5399,7 +5530,7 @@
         <data>95</data>
         <data>100</data>
       </table>
-      <description>Scales shift retard by captured gear and engine-event counter. Other correction limits still apply.</description>
+      <description>Scales shift retard by captured gear and engine-event counter. One event spans 180 crank degrees, so elapsed time varies with RPM. Other correction limits still apply.</description>
     </table>
     <table type="2D" name="High RPM Shift Retard RPM Threshold - Base" category="Shift Related" storageaddress="0xda48" storagetype="float" endian="big" sizex="6" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5435,7 +5566,7 @@
         <data>5</data>
         <data>6</data>
       </table>
-      <description>Timer 1 reload in engine events. Stock reload is zero in gears 3 through 6.</description>
+      <description>Timer 1 reload in 180-degree crank events. Duration is approximately events times 30 divided by RPM, in seconds, while the countdown conditions remain true.</description>
     </table>
     <table type="2D" name="High RPM Shift Retard Timer - 2" category="Shift Related" storageaddress="0xdab0" storagetype="uint8" endian="big" sizex="6" userlevel="1">
       <scaling units="engine events" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5447,7 +5578,7 @@
         <data>5</data>
         <data>6</data>
       </table>
-      <description>Timer 2 reload in engine events. Larger values extend the correction interval; time varies with engine speed.</description>
+      <description>Timer 2 reload in 180-degree crank events. Duration is approximately events times 30 divided by RPM, in seconds, while the countdown conditions remain true.</description>
     </table>
     <table type="2D" name="Catalyst Temperature Model - Enrichment Additive" category="Temperature Models" storageaddress="0xc298" storagetype="float" endian="big" sizex="9" userlevel="1">
       <scaling units="C" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />

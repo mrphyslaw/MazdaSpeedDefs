@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11 - 2026-10-18
+
+- Added verified stock injection-window limits and coolant/after-start phase corrections across all seven definitions.
+- Added warm-mode temperature and hysteresis controls where supported; preserved the earlier ROM strategy.
+- Converted verified timers and rates to seconds-based units; documented engine-event timing and RPM dependence.
+- Clarified phase selection, blending, pulsewidth interaction and tuner help.
+- Passed native-code and RomRaider edit/save/checksum checks; approved after local manual review.
+- Injection phase retains ECU degrees; the absolute BTDC/ATDC reference remains unconfirmed.
+
 ## 0.10 - 2026-10-18
 
 - Extended stock injection-phase controls to the remaining five definitions.
