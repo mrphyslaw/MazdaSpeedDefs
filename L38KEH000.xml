@@ -5497,17 +5497,11 @@
       </table>
       <description>Adjustment added to base volumetric efficiency when the VVT correction is active. Uses nearest edge outside axes.</description>
     </table>
-    <table type="Switch" name="Disable Decel Fuel Cut" category="Options" storageaddress="0x590ca" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+    <table type="Switch" name="Disable Decel Fuel Cut - Code Patch" category="Options" storageaddress="0x590ca" storagetype="uint8" endian="big" sizex="1" userlevel="1">
       <state name="Stock deceleration fuel cut" data="8D" />
       <state name="Disable deceleration fuel cut" data="A0" />
       <scaling units="Code state" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Disables deceleration fuel cut. Other fuel-cut protections remain active.</description>
-    </table>
-    <table type="Switch" name="Disable Fuel Correction Accumulators" category="Options" storageaddress="0x59180" storagetype="uint8" endian="big" sizex="1" userlevel="1">
-      <state name="Stock correction accumulators" data="8D" />
-      <state name="Disable correction accumulators" data="A0" />
-      <scaling units="Code state" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Keeps the two fuel correction accumulators at zero.</description>
+      <description>Changes ECU code to disable normal deceleration fuel cut. Other fuel-cut protections remain active.</description>
     </table>
     <table type="2D" name="MAF Airflow Floor" category="Sensor Calibration" storageaddress="0x9D90" storagetype="float" endian="big" sizex="29" userlevel="1">
       <scaling units="lb/min" expression="x*0.13227735731092655+(0)" to_byte="(x-(0))/0.13227735731092655" format="0.0000" fineincrement="0.01" coarseincrement="1" />

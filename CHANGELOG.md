@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.18 - 2026-10-20
+
+- Removed Disable Fuel Correction Accumulators from all seven definitions.
+- Renamed the retained option to Disable Decel Fuel Cut - Code Patch and clarified that it changes ECU code.
+- Verified RomRaider loading, both patch states, checksum repair and exact stock restoration.
+
 ## 0.17 - 2026-10-20
 
 - Added separate Disable Decel Fuel Cut and Disable Fuel Correction Accumulators controls to all seven definitions under Options.
