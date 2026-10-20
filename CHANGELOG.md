@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16 - 2026-10-20
+
+- Renamed the accumulator-reset option to Disable Fuel Correction Accumulators in L33XEH, L35HEH and L39SED/SEE/SEF.
+- Retained Disable Decel Fuel Cut in L38KEH and L3M7EF, where the native switch controls the deceleration fuel-cut ramp; clarified that other fuel-cut protections remain active.
+- Verified each ROM independently; preserved switch addresses, encoded byte states, table data, axes and checksum support.
+
 ## 0.15 - 2026-10-19
 
 - Documented verified stock lookup ranges and edge-holding behavior in tuner help.
