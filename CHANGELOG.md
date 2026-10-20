@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.17 - 2026-10-20
+
+- Added separate Disable Decel Fuel Cut and Disable Fuel Correction Accumulators controls to all seven definitions under Options.
+- Verified the deceleration selector or ramp and accumulator-reset paths independently for each ROM, including all four switch combinations and retained fuel-cut protection paths.
+- Checked stock and edited saves in RomRaider with existing checksum support; retained all other maps, units, axes and settings.
+
 ## 0.16 - 2026-10-20
 
 - Renamed the accumulator-reset option to Disable Fuel Correction Accumulators in L33XEH, L35HEH and L39SED/SEE/SEF.

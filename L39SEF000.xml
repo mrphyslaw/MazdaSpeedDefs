@@ -5513,6 +5513,12 @@
       </table>
       <description>Adjustment added to base volumetric efficiency when the VVT correction is active. Uses nearest edge outside axes.</description>
     </table>
+    <table type="Switch" name="Disable Decel Fuel Cut" category="Options" storageaddress="0x6b85a" storagetype="uint8" endian="big" sizex="1" userlevel="1">
+      <state name="Stock deceleration fuel cut" data="8D" />
+      <state name="Disable deceleration fuel cut" data="A0" />
+      <scaling units="Code state" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Disables deceleration fuel cut. Other fuel-cut protections remain active.</description>
+    </table>
     <table type="Switch" name="Disable Fuel Correction Accumulators" category="Options" storageaddress="0x5911a" storagetype="uint8" endian="big" sizex="1" userlevel="1">
       <state name="Stock correction accumulators" data="8D" />
       <state name="Disable correction accumulators" data="A0" />
