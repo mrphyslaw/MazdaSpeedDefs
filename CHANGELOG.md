@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.19 - 2026-10-21
+
+- Identified the two alternate RPM ceilings as Cold Coolant Rev Limiter - 1 and - 2; documented their temperature hysteresis, priority and countdown qualification.
+- Renamed the alternate knock table to Knock Retard Gain - Alternate Strategy and made its factory-strategy bypass explicit.
+- Applied the verified names, concise help and related-map ordering to all seven definitions; preserved addresses, units, axes, values and checksum support.
+
 ## 0.18 - 2026-10-20
 
 - Removed Disable Fuel Correction Accumulators from all seven definitions.

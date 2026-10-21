@@ -200,6 +200,14 @@
       <scaling units="s" expression="x*0.1+(0)" to_byte="(x-(0))/0.1" format="0.0000" fineincrement="0.1" coarseincrement="0.5" />
       <description>Delay before switching fueling mode while the qualifying conditions remain true. Counts down in 100 ms steps.</description>
     </table>
+    <table type="1D" name="Cold Coolant Rev Limiter - 1" category="Absolute Limits" storageaddress="0x8934" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>First-priority RPM limit for very cold coolant. Factory selection releases at 5 °F (-15 °C) and returns below -4 °F (-20 °C). Overrides the second cold-coolant limit and the normal rev limiter.</description>
+    </table>
+    <table type="1D" name="Cold Coolant Rev Limiter - 2" category="Absolute Limits" storageaddress="0x8938" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <description>Secondary cold-coolant RPM limit, used only while its countdown is active and limit 1 is not selected. Factory coolant thresholds match limit 1, so this path is normally bypassed.</description>
+    </table>
     <table type="2D" name="Load Limit Force Spark Retard" category="Absolute Limits" storageaddress="0xb30c" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="RPM (RPM)" sizex="14">
@@ -396,14 +404,6 @@
     <table type="1D" name="Rev Limiter Normal" category="Absolute Limits" storageaddress="0x893c" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <description>Normal-condition maximum engine RPM before fuel cut.</description>
-    </table>
-    <table type="1D" name="Rev Limiter-unk1" category="Absolute Limits" storageaddress="0x8934" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Alternate RPM limit. Its operating conditions are still unverified.</description>
-    </table>
-    <table type="1D" name="Rev Limiter-unk2" category="Absolute Limits" storageaddress="0x8938" storagetype="float" endian="big" sizex="1" userlevel="1">
-      <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Alternate RPM limit. Its operating conditions are still unverified.</description>
     </table>
     <table type="1D" name="RPM Range Upper Limit Check" category="Absolute Limits" storageaddress="0x2e76c" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -4090,6 +4090,53 @@
       </table>
       <description>Knock-retard recovery decrement indexed by load and RPM, applied at decrement-timer expiry until retard reaches zero. Uses nearest edge outside axes.</description>
     </table>
+    <table type="3D" name="Knock Retard Gain - Alternate Strategy" category="Ignition" storageaddress="0x21e10" storagetype="float" endian="big" sizex="12" userlevel="1" sizey="27">
+      <scaling units="° retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="12">
+        <data>1000</data>
+        <data>1500</data>
+        <data>2000</data>
+        <data>2500</data>
+        <data>3000</data>
+        <data>3500</data>
+        <data>4000</data>
+        <data>4500</data>
+        <data>5000</data>
+        <data>5500</data>
+        <data>6000</data>
+        <data>6500</data>
+      </table>
+      <table type="Static Y Axis" name="Load" sizex="27">
+        <data>0.375</data>
+        <data>0.4375</data>
+        <data>0.5</data>
+        <data>0.5625</data>
+        <data>0.625</data>
+        <data>0.6875</data>
+        <data>0.75</data>
+        <data>0.8125</data>
+        <data>0.875</data>
+        <data>0.9375</data>
+        <data>1.0</data>
+        <data>1.0625</data>
+        <data>1.125</data>
+        <data>1.1875</data>
+        <data>1.25</data>
+        <data>1.3125</data>
+        <data>1.375</data>
+        <data>1.4375</data>
+        <data>1.5</data>
+        <data>1.5625</data>
+        <data>1.625</data>
+        <data>1.6875</data>
+        <data>1.75</data>
+        <data>1.8125</data>
+        <data>1.875</data>
+        <data>1.9375</data>
+        <data>2.0</data>
+      </table>
+      <description>Gain for the calculated knock-retard step when the alternate strategy is selected. The factory strategy bypasses this table. Higher values increase the step for the same relative knock-signal excess. Uses nearest edge outside axes.</description>
+    </table>
     <table type="2D" name="Knock Retard Limit" category="Ignition" storageaddress="0x40130" storagetype="float" endian="big" sizex="14" userlevel="1">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
       <table type="Static X Axis" name="Engine Speed (RPM)" sizex="14">
@@ -4595,53 +4642,6 @@
         <data>2</data>
       </table>
       <description>Load-based ignition retard while its timer and latch allow. Warm-engine open-loop operation can inhibit it. Uses nearest edge outside axes.</description>
-    </table>
-    <table type="3D" name="Unk Retard Step Size" category="Ignition" storageaddress="0x21e10" storagetype="float" endian="big" sizex="12" userlevel="1" sizey="27">
-      <scaling units="° retard" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <table type="Static X Axis" name="Engine Speed (RPM)" sizex="12">
-        <data>1000</data>
-        <data>1500</data>
-        <data>2000</data>
-        <data>2500</data>
-        <data>3000</data>
-        <data>3500</data>
-        <data>4000</data>
-        <data>4500</data>
-        <data>5000</data>
-        <data>5500</data>
-        <data>6000</data>
-        <data>6500</data>
-      </table>
-      <table type="Static Y Axis" name="Load" sizex="27">
-        <data>0.375</data>
-        <data>0.4375</data>
-        <data>0.5</data>
-        <data>0.5625</data>
-        <data>0.625</data>
-        <data>0.6875</data>
-        <data>0.75</data>
-        <data>0.8125</data>
-        <data>0.875</data>
-        <data>0.9375</data>
-        <data>1.0</data>
-        <data>1.0625</data>
-        <data>1.125</data>
-        <data>1.1875</data>
-        <data>1.25</data>
-        <data>1.3125</data>
-        <data>1.375</data>
-        <data>1.4375</data>
-        <data>1.5</data>
-        <data>1.5625</data>
-        <data>1.625</data>
-        <data>1.6875</data>
-        <data>1.75</data>
-        <data>1.8125</data>
-        <data>1.875</data>
-        <data>1.9375</data>
-        <data>2.0</data>
-      </table>
-      <description>Alternate knock-retard step by engine speed and load. Inactive with the original strategy selector. Uses nearest edge outside axes.</description>
     </table>
     <table type="3D" name="APP Requested Load Knocking" category="Load Targeting" storageaddress="0x3bbc8" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="17">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
