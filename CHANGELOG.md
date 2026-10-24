@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.20 - 2026-10-24
+
+- Added L3P4EM000 support for the 2006 Australian-market Mazda 6 MPS, matching existing factory-definition coverage.
+- Verified target map locations, dimensions, axes, timing compatibility and diagnostic configuration controls against the supplied stock dump.
+- Added a dedicated checksum module, launcher support and rebuild instructions.
+- Passed native lookup, diagnostic and checksum checks plus RomRaider load, edit, save and restore checks.
+
 ## 0.19 - 2026-10-21
 
 - Identified the two alternate RPM ceilings as Cold Coolant Rev Limiter - 1 and - 2; documented their temperature hysteresis, priority and countdown qualification.
