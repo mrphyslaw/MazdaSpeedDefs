@@ -2,6 +2,7 @@
 
 ## 0.22 - 2026-10-27
 
+- Made automatic checksum correction on normal RomRaider save a mandatory release requirement. Added an all-definition save audit, independent checksum verification, exact restoration, disk reopen checks, and validation-only negative controls.
 - Added six L3CGEE000 MAP scaling controls under Sensor Calibration. The control and diagnostic paths share coefficients; logging has its own set. Named the offset as subtractive and documented the standard OBD pressure limit.
 - Added automatic code-checksum correction on save using the existing correction word at 0x3FFC0. Calibration-only edits remain unchanged by that code sum.
 - Verified native MAP conversions, checksum sweeps, each independent edit and combined MAP/calibration disk save/reopen with exact original restoration.

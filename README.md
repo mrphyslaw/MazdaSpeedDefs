@@ -18,7 +18,9 @@ The launcher uses Java from the RomRaider folder, `JAVA_HOME`, or `PATH`. It pri
 
 ## Checksum support
 
-Use the supplied launcher so RomRaider can load the included checksum modules. They validate supported ROMs when opened and apply the supported checksum behavior when saved. See the [support notes](support) for details.
+Use the supplied launcher so RomRaider can load the included checksum modules. They validate supported ROMs when opened and automatically correct checksums when edited ROMs are saved. No separate checksum repair step is needed. Edits outside a checksum's coverage leave its correction word unchanged. See the [support notes](support) for details.
+
+Automatic correction through RomRaider's normal save path is a [required release check](checksum/tests) for every definition.
 
 Java source is included under `checksum/source`. To rebuild the modules, run `checksum/Build_Checksum.cmd` with a JDK on `PATH`, after placing the repository files in the RomRaider folder.
 
