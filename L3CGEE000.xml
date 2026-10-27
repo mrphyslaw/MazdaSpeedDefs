@@ -12,7 +12,7 @@
       <memmodel>PowerPC VLE</memmodel>
       <filesize>1024kb</filesize>
       <author>mrphyslaw</author>
-      <version>0.21 experimental</version>
+      <version>0.22 experimental</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL3CG" />
@@ -5642,6 +5642,30 @@
         <data>4.992000103</data>
       </table>
       <description>Airflow represented by each MAF sensor voltage. The same curve is used during initialization and normal operation. Keep the upper range within the sensor and housing capacity.</description>
+    </table>
+    <table type="1D" name="MAP Scale Base Multiplier - Control and Diagnostics" category="Sensor Calibration" storageaddress="0x40314" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Multiplier" expression="x" to_byte="x" format="0.000000" fineincrement="0.001" coarseincrement="1" />
+      <description>Multiplier used to convert MAP sensor voltage into manifold pressure. Pressure is voltage times the base and second multipliers, minus the offset. Keep the control/diagnostic and logging values matched. RomRaider updates the code checksum on save. Flashing these values requires writing the affected application code, not just calibration data.</description>
+    </table>
+    <table type="1D" name="MAP Scale Base Multiplier - Logging" category="Sensor Calibration" storageaddress="0x44358" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Multiplier" expression="x" to_byte="x" format="0.000000" fineincrement="0.001" coarseincrement="1" />
+      <description>Multiplier used to convert MAP sensor voltage into manifold pressure. Pressure is voltage times the base and second multipliers, minus the offset. Keep the control/diagnostic and logging values matched. The standard OBD pressure value still stops at 255 kPa. RomRaider updates the code checksum on save. Flashing these values requires writing the affected application code, not just calibration data.</description>
+    </table>
+    <table type="1D" name="MAP Scale Second Multiplier - Control and Diagnostics" category="Sensor Calibration" storageaddress="0x40310" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Multiplier" expression="x" to_byte="x" format="0.000000" fineincrement="0.001" coarseincrement="1" />
+      <description>Multiplier used to convert MAP sensor voltage into manifold pressure. Pressure is voltage times the base and second multipliers, minus the offset. Keep the control/diagnostic and logging values matched. RomRaider updates the code checksum on save. Flashing these values requires writing the affected application code, not just calibration data.</description>
+    </table>
+    <table type="1D" name="MAP Scale Second Multiplier - Logging" category="Sensor Calibration" storageaddress="0x44354" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="Multiplier" expression="x" to_byte="x" format="0.000000" fineincrement="0.001" coarseincrement="1" />
+      <description>Multiplier used to convert MAP sensor voltage into manifold pressure. Pressure is voltage times the base and second multipliers, minus the offset. Keep the control/diagnostic and logging values matched. The standard OBD pressure value still stops at 255 kPa. RomRaider updates the code checksum on save. Flashing these values requires writing the affected application code, not just calibration data.</description>
+    </table>
+    <table type="1D" name="MAP Scale Subtractive Offset - Control and Diagnostics" category="Sensor Calibration" storageaddress="0x4030c" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="kPa" expression="x" to_byte="x" format="0.000000" fineincrement="0.001" coarseincrement="1" />
+      <description>Offset subtracted from calculated manifold pressure, in kPa. Keep the control/diagnostic and logging offsets matched to the sensor calibration. RomRaider updates the code checksum on save. Flashing these values requires writing the affected application code, not just calibration data.</description>
+    </table>
+    <table type="1D" name="MAP Scale Subtractive Offset - Logging" category="Sensor Calibration" storageaddress="0x44350" storagetype="float" endian="big" sizex="1" userlevel="1">
+      <scaling units="kPa" expression="x" to_byte="x" format="0.000000" fineincrement="0.001" coarseincrement="1" />
+      <description>Offset subtracted from calculated manifold pressure, in kPa. Keep the control/diagnostic and logging offsets matched to the sensor calibration. The standard OBD pressure value still stops at 255 kPa. RomRaider updates the code checksum on save. Flashing these values requires writing the affected application code, not just calibration data.</description>
     </table>
     <table type="2D" name="High RPM Shift Retard - RPM" category="Shift Related" storageaddress="0xe3094" storagetype="float" endian="big" sizex="11" userlevel="1">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />

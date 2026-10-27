@@ -2,21 +2,42 @@
 
 This experimental definition uses the stock calibration layout identified by its filename. Year and market have not been independently established. ROM images are not included.
 
-Use the supplied launcher with the ordinary RomRaider installation. The definition and checksum module must be installed together.
+Use the supplied launcher with the ordinary RomRaider installation. Update the definition and checksum module together.
 
 ## Verification
 
-The definition contains 287 verified tuning entries and 155 diagnostic reporting controls. Addresses, native lookup dimensions, axes, units, bank selection and relevant time bases were checked against the matching image. RomRaider load, all cells and axis labels, numeric edits, reporting presets, save and restore were checked. A no-edit save is byte-identical. Hardware operation and flashing have not been validated.
+The definition contains 293 verified tuning entries and 155 diagnostic reporting controls. Addresses, native lookup dimensions, axes, units, bank selection and relevant time bases were checked against the matching image. RomRaider load, cells, axis labels, numeric edits, reporting presets, save and restore were checked. A no-edit save is byte-identical. Hardware operation and flashing have not been validated.
 
-The existing 295-entry reference scope was reviewed in full: 275 entries have native coverage, with shared tables consolidated and additional native banks retained. The other 20 reference entries are not exposed. An exclusion means support is not established; it does not prove the ECU has no comparable function.
+The existing 295-entry reference scope was reviewed in full: 284 entries have native coverage, with shared tables consolidated and additional native banks retained. The other 11 reference entries are not exposed. An exclusion means support is not established; it does not prove the ECU has no comparable function.
 
 ## Checksum behavior
 
-The module validates the native application code sum and application markers. Editable calibration addresses are outside that code sum. Saving a valid calibration edit leaves the protected code unchanged. The module rejects an invalid code sum or marker and does not repair arbitrary code changes. Additional calibration integrity rules and compatibility with a particular flasher have not been established.
+RomRaider checks the native application code sum and validity markers when opening the image. When an edit changes the code sum, saving automatically updates the existing big-endian correction word at `0x3FFC0`. Already-valid images are left unchanged. Invalid markers, software identifiers or checksum-routine profiles are rejected.
 
-Code patches and code-backed sensor scaling constants are not exposed. Keep the original image and save edits under a new filename.
+The native sum covers `0x4000` through `0xBFFFF`, excluding `0x1C000` through `0x1FFFF`, and must equal `0x5AA55AA5`. Calibration edits at `0xC0000` through `0xFFFFD` are outside that sum and do not require changing its correction word. The final validity marker remains protected.
 
-## Differences from the other definitions
+The transfer CRC and runtime diagnostic CVN are separate calculated values. The module does not replace the flasher's transfer verification. No additional stored calibration checksum rule is claimed.
+
+## MAP sensor scaling
+
+Six scalars are listed under **Sensor Calibration**:
+
+- MAP Scale Base Multiplier - Control and Diagnostics
+- MAP Scale Base Multiplier - Logging
+- MAP Scale Second Multiplier - Control and Diagnostics
+- MAP Scale Second Multiplier - Logging
+- MAP Scale Subtractive Offset - Control and Diagnostics
+- MAP Scale Subtractive Offset - Logging
+
+The primary control conversion, second sampled pressure channel and startup initialization share one set of three coefficients. Logging uses a separate set. Keep corresponding control/diagnostic and logging coefficients matched to the sensor calibration.
+
+The conversion is `pressure (kPa) = max(0, voltage × base multiplier × second multiplier − offset)`. The offset is subtracted. Standard OBD pressure output remains limited to 255 kPa; these controls do not extend that byte's range.
+
+These are code-backed constants. Their application window is `0x40000` through `0x5FFFF`; saving also updates the checksum word in the `0x30000` through `0x3FFFF` window. A writer must include both affected application areas. A calibration-only write cannot apply MAP scaling edits.
+
+All 1,024 ADC codes were checked with stock and matched edited coefficients, along with independent coefficient changes, zero clamping, pressure packing, logging saturation and fallback behavior. Complete native checksum sweeps accept corrected MAP edits and detect uncorrected ones. Seven RomRaider disk save/reopen tests cover each coefficient and a combined MAP/calibration edit; every restoration reproduces the original file exactly.
+
+## Other differences from the definitions
 
 | Reference control group | Support in this definition |
 | --- | --- |
@@ -29,8 +50,7 @@ Code patches and code-backed sensor scaling constants are not exposed. Keep the 
 | Fuel pressure temperature additive | No matching additive established. The verified startup temperature multiplier is included with its actual axes. |
 | Knock recovery steps 1 and 2 | Shared code constant also affects knock attack; independent edits are not supported. Step 3 and both recovery intervals are included. |
 | Supplemental spark RPM cap | No verified corresponding independent cap. The load-retard request and final timing clamps are included. |
-| Deceleration fuel-cut code patch | Unsupported code edit. Factory deceleration thresholds and hold timer are included. |
-| Nine separate MAP scaling entries | Identified control/logging coefficients are code-backed; no independently verified third diagnostic set. These entries are not exposed. |
+| Deceleration fuel-cut code patch | No target-specific instruction patch verified. Factory deceleration thresholds and hold timer are included. |
 
 ## Diagnostic controls
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.22 - 2026-10-27
+
+- Added six L3CGEE000 MAP scaling controls under Sensor Calibration. The control and diagnostic paths share coefficients; logging has its own set. Named the offset as subtractive and documented the standard OBD pressure limit.
+- Added automatic code-checksum correction on save using the existing correction word at 0x3FFC0. Calibration-only edits remain unchanged by that code sum.
+- Verified native MAP conversions, checksum sweeps, each independent edit and combined MAP/calibration disk save/reopen with exact original restoration.
+
 ## 0.21 - 2026-10-26
 
 - Added experimental L3CGEE000 Gen2 Mazdaspeed3 / Mazda3 MPS definition and dedicated checksum validation support.
