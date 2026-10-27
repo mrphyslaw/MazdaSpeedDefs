@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.21 - 2026-10-26
+
+- Added experimental L3CGEE000 Gen2 Mazdaspeed3 / Mazda3 MPS definition and dedicated checksum validation support.
+- Verified native map geometry, bank selection, units and consumer-specific timing; retained only supported controls and documented reference exclusions in the support notes.
+- Added launcher and checksum rebuild support using ordinary RomRaider.
+- Passed native instruction checks and RomRaider cell, axis, edit/save/restore, DTC preset and checksum-loading checks. No ROM image is included.
+
 ## 0.20 - 2026-10-24
 
 - Added L3P4EM000 support for the 2006 Australian-market Mazda 6 MPS, matching existing factory-definition coverage.

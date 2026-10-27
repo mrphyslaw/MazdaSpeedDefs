@@ -4,6 +4,7 @@ title RomRaider - Mazda
 set "RR_HOME=%~dp0"
 set "MAZDA_JAVA="
 if not exist "%RR_HOME%RomRaider.jar" goto missing_rr
+if not exist "%RR_HOME%checksum\MazdaL3CGChecksum.jar" goto missing_checksum
 if not exist "%RR_HOME%checksum\MazdaL3P4Checksum.jar" goto missing_checksum
 if not exist "%RR_HOME%checksum\MazdaL38KChecksum.jar" goto missing_checksum
 if not exist "%RR_HOME%checksum\MazdaL3M7Checksum.jar" goto missing_checksum
@@ -25,7 +26,7 @@ if not defined MAZDA_JAVA goto missing_java
 :launch
 pushd "%RR_HOME%"
 if errorlevel 1 goto failed
-"%MAZDA_JAVA%" -Djava.library.path="%RR_HOME%lib\windows\64" -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Xms64M -Xmx1024M -cp "%RR_HOME%checksum\MazdaL3P4Checksum.jar;%RR_HOME%checksum\MazdaL38KChecksum.jar;%RR_HOME%checksum\MazdaL3M7Checksum.jar;%RR_HOME%checksum\MazdaL39SChecksum.jar;%RR_HOME%checksum\MazdaL39SFChecksum.jar;%RR_HOME%checksum\MazdaL35HChecksum.jar;%RR_HOME%checksum\MazdaL33XChecksum.jar;%RR_HOME%checksum\MazdaL39SDChecksum.jar;%RR_HOME%RomRaider.jar;%RR_HOME%lib\common\*;%RR_HOME%lib\windows\*;%RR_HOME%i18n;%RR_HOME%lib;%RR_HOME%." com.romraider.ECUExec
+"%MAZDA_JAVA%" -Djava.library.path="%RR_HOME%lib\windows\64" -Dawt.useSystemAAFontSettings=lcd -Dswing.aatext=true -Xms64M -Xmx1024M -cp "%RR_HOME%checksum\MazdaL3CGChecksum.jar;%RR_HOME%checksum\MazdaL3P4Checksum.jar;%RR_HOME%checksum\MazdaL38KChecksum.jar;%RR_HOME%checksum\MazdaL3M7Checksum.jar;%RR_HOME%checksum\MazdaL39SChecksum.jar;%RR_HOME%checksum\MazdaL39SFChecksum.jar;%RR_HOME%checksum\MazdaL35HChecksum.jar;%RR_HOME%checksum\MazdaL33XChecksum.jar;%RR_HOME%checksum\MazdaL39SDChecksum.jar;%RR_HOME%RomRaider.jar;%RR_HOME%lib\common\*;%RR_HOME%lib\windows\*;%RR_HOME%i18n;%RR_HOME%lib;%RR_HOME%." com.romraider.ECUExec
 set "MAZDA_EXIT=%ERRORLEVEL%"
 popd
 if not "%MAZDA_EXIT%"=="0" goto failed
