@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.23 - 2026-11-02
+
+- Added experimental L3M6EG000 definition with existing tuner-focused coverage and target-specific diagnostic controls.
+- Added automatic program-checksum correction on ordinary RomRaider save, launcher support, and a checksum rebuild target.
+- Verified target map locations, geometry, axes, timing and the layout-specific deceleration fuel-cut code patch.
+
 ## 0.22 - 2026-10-27
 
 - Made automatic checksum correction on normal RomRaider save a mandatory release requirement. Added an all-definition save audit, independent checksum verification, exact restoration, disk reopen checks, and validation-only negative controls.
