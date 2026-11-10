@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Aligned front wideband fuel feedback names and help across all definitions.
+- Added rear O2 feedback gain and response period to the Gen 1 definitions under Fueling.
+
 ## 0.24 - 2026-11-10
 
 - Added the primary wideband fuel feedback gain and response period to L3CGEE000. Labeled the existing rear O2 curves separately under Fueling.
