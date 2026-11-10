@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24 - 2026-11-10
+
+- Added the primary wideband fuel feedback gain and response period to L3CGEE000. Labeled the existing rear O2 curves separately under Fueling.
+
 ## 0.23 - 2026-11-02
 
 - Added experimental L3M6EG000 definition with existing tuner-focused coverage and target-specific diagnostic controls.

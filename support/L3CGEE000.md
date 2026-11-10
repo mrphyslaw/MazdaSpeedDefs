@@ -6,9 +6,13 @@ Use the supplied launcher with the ordinary RomRaider installation. Update the d
 
 ## Verification
 
-The definition contains 293 verified tuning entries and 155 diagnostic reporting controls. Addresses, native lookup dimensions, axes, units, bank selection and relevant time bases were checked against the matching image. RomRaider load, cells, axis labels, numeric edits, reporting presets, save and restore were checked. A no-edit save is byte-identical. Hardware operation and flashing have not been validated.
+The definition contains 295 verified tuning entries and 155 diagnostic reporting controls. Addresses, native lookup dimensions, axes, units, bank selection and relevant time bases were checked against the matching image. RomRaider load, cells, axis labels, numeric edits, reporting presets, save and restore were checked. A no-edit save is byte-identical. Hardware operation and flashing have not been validated.
 
 The existing 295-entry reference scope was reviewed in full: 284 entries have native coverage, with shared tables consolidated and additional native banks retained. The other 11 reference entries are not exposed. An exclusion means support is not established; it does not prove the ECU has no comparable function.
+
+## Fuel feedback
+
+The **Primary Wideband** curves under **Fueling** set gain and response period for front sensor correction. This controller can operate during enrichment when its factory conditions are met. The **Rear O2** curves apply to the separate rear sensor controller. Each pair uses an airflow axis in g/s and a response period in seconds.
 
 ## Checksum behavior
 
