@@ -5,13 +5,16 @@ package com.romraider.maps.checksum;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-/** Exact L38KEH000 program-region checksum, independently traced in the ROM. */
+/** L38KEG000 and L38KEH000 program-region checksum, traced in matching ROMs. */
 public final class ChecksumMAZDAL38K implements ChecksumManager {
     private static final int LENGTH = 0x100000;
     private static final int START = 0x48000;
     private static final int TARGET = 0x5AA55AA5;
     private static final int ID_OFFSET = 0x2A7D8;
-    private static final byte[] ID = "L38KEH000L3T6021".getBytes(StandardCharsets.US_ASCII);
+    private static final byte[][] IDS = {
+        "L38KEG000L3T6021".getBytes(StandardCharsets.US_ASCII),
+        "L38KEH000L3T6021".getBytes(StandardCharsets.US_ASCII)
+    };
     private boolean requireInjectorCapacityPatch;
 
     @Override public void configure(Map<String, String> attributes) {
@@ -25,10 +28,18 @@ public final class ChecksumMAZDAL38K implements ChecksumManager {
 
     private static void checkIdentity(byte[] data) {
         if (data == null || data.length != LENGTH)
-            throw new IllegalArgumentException("Mazda L38KEH checksum requires an exact 1 MiB image");
-        for (int i = 0; i < ID.length; ++i)
-            if (data[ID_OFFSET + i] != ID[i])
-                throw new IllegalArgumentException("Mazda L38KEH checksum software ID mismatch");
+            throw new IllegalArgumentException("Mazda L38K checksum requires an exact 1 MiB image");
+        for (byte[] id : IDS) {
+            boolean matches = true;
+            for (int i = 0; i < id.length; ++i) {
+                if (data[ID_OFFSET + i] != id[i]) {
+                    matches = false;
+                    break;
+                }
+            }
+            if (matches) return;
+        }
+        throw new IllegalArgumentException("Mazda L38K checksum software ID mismatch");
     }
     private static int word(byte[] data, int address) {
         return ((data[address] & 255) << 24) | ((data[address + 1] & 255) << 16)
