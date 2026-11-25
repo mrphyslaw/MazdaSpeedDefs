@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added CX-7 L37JEF000 support with verified stock-layout maps, diagnostic controls and automatic checksum correction on save.
 - Added L38KEG000 support with the existing Mazdaspeed6 map coverage and automatic program-checksum correction on save.
 - Aligned front wideband fuel feedback names and help across all definitions.
 - Added rear O2 feedback gain and response period to the Gen 1 definitions under Fueling.
