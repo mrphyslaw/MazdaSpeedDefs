@@ -12,7 +12,7 @@
       <memmodel>SH-2E family</memmodel>
       <filesize>1024kb</filesize>
       <author>mrphyslaw</author>
-      <version>0.1 first draft</version>
+      <version>0.2 idle targets</version>
       <noramoffset />
     </romid>
     <checksum type="MAZDAL37J" />
@@ -3498,7 +3498,7 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Desired idle RPM by coolant temperature when in gear with clutch engaged.</description>
+      <description>In-gear idle curve for the optional startup strategy. The original configuration uses Idle RPM Target - In Gear for the base target.</description>
     </table>
     <table type="2D" name="Idle RPM - Neutral" category="Idle" storageaddress="0xa27c" storagetype="float" endian="big" sizex="8" userlevel="1">
       <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -3512,7 +3512,53 @@
         <data>176</data>
         <data>212</data>
       </table>
-      <description>Desired idle RPM by coolant temperature when in neutral or with clutch disengaged.</description>
+      <description>Neutral idle curve for the optional startup strategy. The original configuration uses Idle RPM Target - Neutral for the base target.</description>
+    </table>
+    <table type="3D" name="Idle RPM Target - In Gear" category="Idle" storageaddress="0x40464" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="7">
+      <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Coolant Temperature (degF)" sizex="8">
+        <data>-40</data>
+        <data>-4</data>
+        <data>32</data>
+        <data>68</data>
+        <data>104</data>
+        <data>140</data>
+        <data>176</data>
+        <data>212</data>
+      </table>
+      <table type="Static Y Axis" name="Coolant Temperature at Start (degF)" sizey="7">
+        <data>-22</data>
+        <data>-13</data>
+        <data>-4</data>
+        <data>5</data>
+        <data>14</data>
+        <data>23</data>
+        <data>32</data>
+      </table>
+      <description>Base idle RPM when the ECU selects the in-gear idle state. Uses current and captured startup coolant temperatures. Idle corrections still apply.</description>
+    </table>
+    <table type="3D" name="Idle RPM Target - Neutral" category="Idle" storageaddress="0x40384" storagetype="float" endian="big" sizex="8" userlevel="1" sizey="7">
+      <scaling units="RPM" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
+      <table type="Static X Axis" name="Engine Coolant Temperature (degF)" sizex="8">
+        <data>-40</data>
+        <data>-4</data>
+        <data>32</data>
+        <data>68</data>
+        <data>104</data>
+        <data>140</data>
+        <data>176</data>
+        <data>212</data>
+      </table>
+      <table type="Static Y Axis" name="Coolant Temperature at Start (degF)" sizey="7">
+        <data>-22</data>
+        <data>-13</data>
+        <data>-4</data>
+        <data>5</data>
+        <data>14</data>
+        <data>23</data>
+        <data>32</data>
+      </table>
+      <description>Base idle RPM when the ECU selects the neutral idle state. Uses current and captured startup coolant temperatures. Idle corrections still apply.</description>
     </table>
     <table type="2D" name="Idle Transition Spark Retard - Base" category="Idle" storageaddress="0xb11c" storagetype="float" endian="big" sizex="10" userlevel="1">
       <scaling units="deg" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5123,7 +5169,7 @@
     </table>
     <table type="1D" name="Requested Load Limit Overall" category="Load Targeting" storageaddress="0x9aac" storagetype="float" endian="big" sizex="1" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
-      <description>Shared load ceiling for the stock manual-transmission strategy. Gear and barometric limits, density and acceleration corrections, and injector capacity can reduce the final target further.</description>
+      <description>Shared load ceiling used by the original configuration. Gear and barometric limits, density and acceleration corrections, and injector capacity can reduce the final target further.</description>
     </table>
     <table type="2D" name="Requested Load Limit RPM" category="Load Targeting" storageaddress="0x3acc8" storagetype="float" endian="big" sizex="15" userlevel="1">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />
@@ -5144,7 +5190,7 @@
         <data>6500</data>
         <data>7000</data>
       </table>
-      <description>Conditional RPM-based requested-load ceiling. Bypassed by this ROM's stock manual-transmission configuration.</description>
+      <description>Requested-load ceiling by RPM when the RPM-based limit is active. The original configuration uses Requested Load Limit Overall.</description>
     </table>
     <table type="3D" name="Requested Load Limits Baro Specific" category="Load Targeting" storageaddress="0x3af00" storagetype="float" endian="big" sizex="15" userlevel="1" sizey="8">
       <scaling units="Load" expression="x*1+(0)" to_byte="(x-(0))/1" format="0.0000" fineincrement="0.01" coarseincrement="1" />

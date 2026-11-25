@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added coolant-based in-gear and neutral idle RPM targets for L37JEF000 and clarified which requested-load limit its original configuration uses.
 - Added CX-7 L37JEF000 support with verified stock-layout maps, diagnostic controls and automatic checksum correction on save.
 - Added L38KEG000 support with the existing Mazdaspeed6 map coverage and automatic program-checksum correction on save.
 - Aligned front wideband fuel feedback names and help across all definitions.
